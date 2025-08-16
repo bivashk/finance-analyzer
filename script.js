@@ -448,8 +448,308 @@ Keep responses concise and high-impact.`
         }
     }
 
+    // Transaction Management
+    async handleFileUpload(file) {
+        if (!file) return;
 
-    // Dashboard, AI and analytics methods to be implemented
+        const text = await file.text();
+        const transactions = this.parseCSV(text);
+        
+        if (transactions.length > 0) {
+            this.state.transactions = [...this.state.transactions, ...transactions];
+            this.renderTransactions();
+            this.updateDashboard();
+            this.populateCategoryFilter();
+            this.saveState();
+            this.showToast(`Imported ${transactions.length} transactions`, 'success');
+        } else {
+            this.showToast('No valid transactions found in file', 'error');
+        }
+    }
+
+    parseCSV(text) {
+        const lines = text.split('\n').filter(line => line.trim());
+        if (lines.length < 2) return [];
+
+        const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+        const transactions = [];
+
+        // Find column indices
+        const dateIndex = headers.findIndex(h => h.includes('date'));
+        const descIndex = headers.findIndex(h => h.includes('desc') || h.includes('detail'));
+        const amountIndex = headers.findIndex(h => h.includes('amount') || h.includes('sum'));
+        const categoryIndex = headers.findIndex(h => h.includes('category'));
+
+        if (dateIndex === -1 || descIndex === -1 || amountIndex === -1) {
+            throw new Error('Required columns (Date, Description, Amount) not found');
+        }
+
+        for (let i = 1; i < lines.length; i++) {
+            const row = lines[i].split(',').map(cell => cell.trim().replace(/"/g, ''));
+            
+            try {
+                const transaction = {
+                    id: Date.now() + i,
+                    date: this.parseDate(row[dateIndex]),
+                    description: row[descIndex] || '',
+                    amount: this.parseAmount(row[amountIndex]),
+                    category: categoryIndex !== -1 ? row[categoryIndex] : 'Other',
+                    original: row
+                };
+
+                if (transaction.date && transaction.amount !== null) {
+                    transactions.push(transaction);
+                }
+            } catch (error) {
+                console.warn(`Skipping invalid row ${i}: ${error.message}`);
+            }
+        }
+
+        return transactions;
+    }
+
+    parseDate(dateStr) {
+        // Handle multiple date formats
+        const formats = [
+            /^\d{4}-\d{2}-\d{2}$/,
+            /^\d{2}\/\d{2}\/\d{4}$/,
+            /^\d{2}-\d{2}-\d{4}$/
+        ];
+
+        for (const format of formats) {
+            if (format.test(dateStr)) {
+                const date = new Date(dateStr);
+                return date.getTime();
+            }
+        }
+        
+        throw new Error(`Invalid date format: ${dateStr}`);
+    }
+
+    parseAmount(amountStr) {
+        // Remove currency symbols and commas
+        const cleaned = amountStr.replace(/[₹$,]/g, '');
+        const amount = parseFloat(cleaned);
+        return isNaN(amount) ? null : amount;
+    }
+
+    async categorizeTransactions() {
+        const uncategorized = this.state.transactions.filter(t => !t.category || t.category === 'Other');
+        
+        if (uncategorized.length === 0) {
+            this.showToast('All transactions are already categorized', 'info');
+            return;
+        }
+
+        try {
+            const descriptions = uncategorized.map(t => t.description).join('\n');
+            const prompt = `${this.prompts.categorization}\n\nTransactions:\n${descriptions}`;
+            
+            const response = await this.callAPI(prompt);
+            const categories = response.split('\n').filter(c => c.trim());
+
+            if (categories.length === uncategorized.length) {
+                uncategorized.forEach((transaction, index) => {
+                    const category = categories[index].trim();
+                    if (this.categories.includes(category)) {
+                        transaction.category = category;
+                    }
+                });
+
+                this.renderTransactions();
+                this.updateDashboard();
+                this.populateCategoryFilter();
+                this.saveState();
+                this.showToast(`Categorized ${categories.length} transactions`, 'success');
+            } else {
+                this.showToast('Categorization response format error', 'error');
+            }
+        } catch (error) {
+            this.showToast(`Error categorizing transactions: ${error.message}`, 'error');
+        }
+    }
+
+    renderTransactions() {
+        const container = document.getElementById('transactions-table');
+        
+        if (this.state.transactions.length === 0) {
+            container.innerHTML = '<div class="text-center text-gray-400 py-8">No transactions loaded. Upload a CSV file to get started.</div>';
+            return;
+        }
+
+        const table = document.createElement('table');
+        table.className = 'data-table w-full';
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${this.state.transactions.map(transaction => `
+                    <tr class="transaction-row">
+                        <td>${new Date(transaction.date).toLocaleDateString()}</td>
+                        <td class="max-w-xs truncate">${transaction.description}</td>
+                        <td class="${transaction.amount >= 0 ? 'text-green-400' : 'text-red-400'}">
+                            ${this.formatCurrency(transaction.amount)}
+                        </td>
+                        <td>
+                            <select class="category-select bg-white/5 border border-white/10 rounded p-1 text-sm" 
+                                    data-id="${transaction.id}">
+                                ${this.categories.map(cat => 
+                                    `<option value="${cat}" ${cat === transaction.category ? 'selected' : ''}>${cat}</option>`
+                                ).join('')}
+                            </select>
+                        </td>
+                        <td>
+                            <button class="delete-transaction px-2 py-1 bg-red-600/20 text-red-400 rounded text-sm hover:bg-red-600/30 transition-all" 
+                                    data-id="${transaction.id}">Delete</button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        `;
+
+        container.innerHTML = '';
+        container.appendChild(table);
+
+        // Add event listeners for category changes and delete buttons
+        table.querySelectorAll('.category-select').forEach(select => {
+            select.addEventListener('change', (e) => {
+                const transactionId = parseInt(e.target.dataset.id);
+                const transaction = this.state.transactions.find(t => t.id === transactionId);
+                if (transaction) {
+                    transaction.category = e.target.value;
+                    this.updateDashboard();
+                    this.saveState();
+                }
+            });
+        });
+
+        table.querySelectorAll('.delete-transaction').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const transactionId = parseInt(e.target.dataset.id);
+                if (confirm('Are you sure you want to delete this transaction?')) {
+                    this.state.transactions = this.state.transactions.filter(t => t.id !== transactionId);
+                    this.renderTransactions();
+                    this.updateDashboard();
+                    this.populateCategoryFilter();
+                    this.saveState();
+                }
+            });
+        });
+    }
+
+    filterTransactions() {
+        const searchTerm = document.getElementById('search-transactions').value.toLowerCase();
+        const categoryFilter = document.getElementById('category-filter').value;
+
+        let filtered = this.state.transactions;
+
+        if (searchTerm) {
+            filtered = filtered.filter(t => 
+                t.description.toLowerCase().includes(searchTerm) ||
+                t.category.toLowerCase().includes(searchTerm)
+            );
+        }
+
+        if (categoryFilter) {
+            filtered = filtered.filter(t => t.category === categoryFilter);
+        }
+
+        // Re-render with filtered transactions
+        const originalTransactions = this.state.transactions;
+        this.state.transactions = filtered;
+        this.renderTransactions();
+        this.state.transactions = originalTransactions;
+    }
+
+    populateCategoryFilter() {
+        const select = document.getElementById('category-filter');
+        const categories = [...new Set(this.state.transactions.map(t => t.category))].sort();
+        
+        select.innerHTML = '<option value="">All Categories</option>' +
+            categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+    }
+
+    // Dashboard and Analytics
+    updateDashboard() {
+        this.updateKPIs();
+        this.updateCharts();
+    }
+
+    updateKPIs() {
+        const income = this.state.transactions
+            .filter(t => t.amount > 0)
+            .reduce((sum, t) => sum + t.amount, 0);
+
+        const expenses = this.state.transactions
+            .filter(t => t.amount < 0)
+            .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+        const net = income - expenses;
+
+        document.getElementById('total-income').textContent = this.formatCurrency(income);
+        document.getElementById('total-spend').textContent = this.formatCurrency(expenses);
+        document.getElementById('net-balance').textContent = this.formatCurrency(net);
+        document.getElementById('net-balance').className = `text-2xl font-bold ${net >= 0 ? 'text-green-400' : 'text-red-400'}`;
+        document.getElementById('total-transactions').textContent = this.state.transactions.length;
+    }
+
+    updateCharts() {
+        this.renderBalanceChart();
+        this.renderCategoryChart();
+    }
+
+    renderBalanceChart() {
+        if (this.state.transactions.length === 0) return;
+
+        // Sort transactions by date
+        const sorted = [...this.state.transactions].sort((a, b) => a.date - b.date);
+        let balance = 0;
+        
+        const data = sorted.map(t => {
+            balance += t.amount;
+            return {
+                date: new Date(t.date).toLocaleDateString(),
+                balance: balance
+            };
+        });
+
+        const trace = {
+            x: data.map(d => d.date),
+            y: data.map(d => d.balance),
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Balance',
+            line: { color: '#3b82f6', width: 3 },
+            marker: { color: '#3b82f6', size: 6 }
+        };
+
+        const layout = {
+            title: '',
+            xaxis: { title: 'Date', color: 'rgba(255,255,255,0.8)' },
+            yaxis: { title: 'Balance (₹)', color: 'rgba(255,255,255,0.8)' },
+            paper_bgcolor: 'transparent',
+            plot_bgcolor: 'transparent',
+            font: { color: 'rgba(255,255,255,0.8)' },
+            margin: { t: 30, r: 30, b: 50, l: 80 }
+        };
+
+        const config = { responsive: true, displayModeBar: false };
+
+        Plotly.newPlot('balance-chart', [trace], layout, config);
+    }
+
+    renderCategoryChart() {
+        if (this.state.transactions.length === 0) return;
+
+
+    // AI insights and memory management to be implemented
 }
 
 // Initialize
