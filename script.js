@@ -748,11 +748,406 @@ Keep responses concise and high-impact.`
     renderCategoryChart() {
         if (this.state.transactions.length === 0) return;
 
+        const categoryTotals = {};
+        this.state.transactions
+            .filter(t => t.amount < 0) // Only expenses
+            .forEach(t => {
+                categoryTotals[t.category] = (categoryTotals[t.category] || 0) + Math.abs(t.amount);
+            });
 
-    // AI insights and memory management to be implemented
+        const categories = Object.keys(categoryTotals);
+        const amounts = Object.values(categoryTotals);
+
+        const trace = {
+            x: categories,
+            y: amounts,
+            type: 'bar',
+            marker: {
+                color: categories.map((_, i) => 
+                    `hsl(${(i * 360 / categories.length)}, 70%, 60%)`
+                )
+            }
+        };
+
+        const layout = {
+            title: '',
+            xaxis: { title: 'Category', color: 'rgba(255,255,255,0.8)' },
+            yaxis: { title: 'Amount (₹)', color: 'rgba(255,255,255,0.8)' },
+            paper_bgcolor: 'transparent',
+            plot_bgcolor: 'transparent',
+            font: { color: 'rgba(255,255,255,0.8)' },
+            margin: { t: 30, r: 30, b: 100, l: 80 }
+        };
+
+        const config = { responsive: true, displayModeBar: false };
+
+        Plotly.newPlot('category-chart', [trace], layout, config);
+    }
+
+    // AI Insights Generation
+    async generateInsights() {
+        if (this.state.transactions.length === 0) {
+            this.showToast('No transactions available for analysis', 'warning');
+            return;
+        }
+
+        try {
+            const snapshot = this.createFinancialSnapshot();
+            const prompt = `${this.prompts.insights}\n\nFinancial Snapshot:\n${snapshot}`;
+            
+            const insights = await this.callAPI(prompt);
+            
+            // Add insights as a message in chat
+            this.addMessage('assistant', `## 🔍 AI Financial Insights\n\n${insights}`);
+            
+            // Switch to chat tab to show insights
+            this.switchTab('chat');
+            
+            this.showToast('AI insights generated successfully', 'success');
+        } catch (error) {
+            this.showToast(`Error generating insights: ${error.message}`, 'error');
+        }
+    }
+
+    createFinancialSnapshot() {
+        const income = this.state.transactions
+            .filter(t => t.amount > 0)
+            .reduce((sum, t) => sum + t.amount, 0);
+
+        const expenses = this.state.transactions
+            .filter(t => t.amount < 0)
+            .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+        const categoryBreakdown = {};
+        this.state.transactions
+            .filter(t => t.amount < 0)
+            .forEach(t => {
+                categoryBreakdown[t.category] = (categoryBreakdown[t.category] || 0) + Math.abs(t.amount);
+            });
+
+        const topCategories = Object.entries(categoryBreakdown)
+            .sort(([,a], [,b]) => b - a)
+            .slice(0, 5)
+            .map(([cat, amount]) => `${cat}: ${this.formatCurrency(amount)}`)
+            .join(', ');
+
+        return `
+Total Income: ${this.formatCurrency(income)}
+Total Expenses: ${this.formatCurrency(expenses)}
+Net Balance: ${this.formatCurrency(income - expenses)}
+Transaction Count: ${this.state.transactions.length}
+Top Spending Categories: ${topCategories}
+Average Transaction: ${this.formatCurrency(expenses / this.state.transactions.filter(t => t.amount < 0).length)}
+        `.trim();
+    }
+
+    // Memory Management
+    updateMemoryDisplay() {
+        const summaryElement = document.getElementById('memory-summary');
+        const profileElement = document.getElementById('user-profile');
+
+        summaryElement.textContent = this.state.memory.summary || 'No conversation memory yet. Start chatting to build context.';
+        profileElement.value = this.state.memory.profile || '';
+    }
+
+    openMemoryEditor() {
+        const modal = document.getElementById('memory-modal');
+        const editor = document.getElementById('memory-editor');
+        
+        editor.value = this.state.memory.summary;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        modal.querySelector('.bg-gray-900').classList.add('modal-enter');
+    }
+
+    closeMemoryEditor() {
+        const modal = document.getElementById('memory-modal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    saveMemoryEdit() {
+        const editor = document.getElementById('memory-editor');
+        this.state.memory.summary = editor.value;
+        this.updateMemoryDisplay();
+        this.saveState();
+        this.closeMemoryEditor();
+        this.showToast('Memory updated successfully', 'success');
+    }
+
+    exportMemory() {
+        const data = {
+            summary: this.state.memory.summary,
+            profile: this.state.memory.profile,
+            timestamp: new Date().toISOString()
+        };
+
+        this.downloadJSON(data, 'memory-export.json');
+        this.showToast('Memory exported successfully', 'success');
+    }
+
+    saveProfile() {
+        const profileElement = document.getElementById('user-profile');
+        this.state.memory.profile = profileElement.value;
+        this.saveState();
+        this.showToast('Profile saved successfully', 'success');
+    }
+
+    // Utility Functions
+    downloadSampleCSV() {
+        const sampleData = [
+            'Date,Description,Amount,Category',
+            '2024-01-15,"Grocery Shopping",-2500,Groceries',
+            '2024-01-16,"Salary Credit",50000,Income',
+            '2024-01-17,"Uber Ride",-350,Transport',
+            '2024-01-18,"Netflix Subscription",-799,Entertainment',
+            '2024-01-19,"Medical Checkup",-1200,Health',
+            '2024-01-20,"Fuel",-3000,Fuel'
+        ].join('\n');
+
+        this.downloadText(sampleData, 'sample-transactions.csv', 'text/csv');
+        this.showToast('Sample CSV downloaded', 'success');
+    }
+
+    formatCurrency(amount) {
+        return new Intl.NumberFormat('en-IN', {
+            style: 'currency',
+            currency: 'INR',
+            minimumFractionDigits: 0
+        }).format(amount);
+    }
+
+    downloadText(text, filename, type = 'text/plain') {
+        const blob = new Blob([text], { type });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    downloadJSON(obj, filename) {
+        this.downloadText(JSON.stringify(obj, null, 2), filename, 'application/json');
+    }
+
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    // Toast Notifications
+    showToast(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `
+            <div class="flex items-start space-x-2">
+                <div class="flex-shrink-0 mt-0.5">
+                    ${this.getToastIcon(type)}
+                </div>
+                <div class="text-sm">${message}</div>
+            </div>
+        `;
+
+        container.appendChild(toast);
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+            }
+        }, 3000);
+    }
+
+    getToastIcon(type) {
+        const icons = {
+            success: '<svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>',
+            error: '<svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>',
+            warning: '<svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.664-.833-2.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>',
+            info: '<svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>'
+        };
+        return icons[type] || icons.info;
+    }
+
+    // Theme Management
+    toggleTheme() {
+        const html = document.documentElement;
+        const isLight = html.classList.contains('light');
+        
+        html.classList.toggle('light', !isLight);
+        this.state.settings.theme = isLight ? 'dark' : 'light';
+        
+        document.getElementById('theme-text').textContent = isLight ? 'Dark Mode' : 'Light Mode';
+        this.saveState();
+        
+        // Re-render charts with new theme
+        setTimeout(() => {
+            this.updateCharts();
+        }, 100);
+    }
+
+    // Data Management
+    exportAllData() {
+        const exportData = {
+            conversations: this.state.currentConversation,
+            transactions: this.state.transactions,
+            memory: this.state.memory,
+            settings: this.state.settings,
+            exportDate: new Date().toISOString(),
+            version: '1.0'
+        };
+
+        this.downloadJSON(exportData, `financeai-export-${new Date().toISOString().split('T')[0]}.json`);
+        this.showToast('All data exported successfully', 'success');
+    }
+
+    async importAllData(file) {
+        if (!file) return;
+
+        try {
+            const text = await file.text();
+            const importData = JSON.parse(text);
+
+            if (confirm('This will replace all current data. Are you sure?')) {
+                if (importData.conversations) this.state.currentConversation = importData.conversations;
+                if (importData.transactions) this.state.transactions = importData.transactions;
+                if (importData.memory) this.state.memory = importData.memory;
+                if (importData.settings) this.state.settings = { ...this.state.settings, ...importData.settings };
+
+                this.renderTransactions();
+                this.updateDashboard();
+                this.updateMemoryDisplay();
+                this.populateCategoryFilter();
+                this.saveState();
+
+                // Render chat messages
+                const messagesContainer = document.getElementById('chat-messages');
+                messagesContainer.innerHTML = '';
+                this.state.currentConversation.forEach(msg => {
+                    this.addMessageToDOM(msg);
+                });
+
+                this.showToast('Data imported successfully', 'success');
+            }
+        } catch (error) {
+            this.showToast(`Import failed: ${error.message}`, 'error');
+        }
+    }
+
+    addMessageToDOM(message) {
+        const messagesContainer = document.getElementById('chat-messages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-message ${message.role} flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`;
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content relative max-w-3xl';
+        
+        if (message.role === 'assistant') {
+            contentDiv.innerHTML = this.formatMessage(message.content);
+            this.addCopyButtons(contentDiv);
+        } else {
+            contentDiv.textContent = message.content;
+        }
+
+        messageDiv.appendChild(contentDiv);
+        messagesContainer.appendChild(messageDiv);
+        this.updateChatStats();
+    }
+
+    clearAllData() {
+        if (confirm('This will delete ALL data including conversations, transactions, and memory. Are you sure?')) {
+            // Reset state
+            this.state.conversations = [];
+            this.state.currentConversation = [];
+            this.state.transactions = [];
+            this.state.memory = {
+                summary: '',
+                profile: '',
+                keywordIndex: new Map()
+            };
+
+            // Clear UI
+            document.getElementById('chat-messages').innerHTML = '';
+            this.renderTransactions();
+            this.updateDashboard();
+            this.updateMemoryDisplay();
+            this.populateCategoryFilter();
+            this.updateChatStats();
+
+            // Clear localStorage
+            localStorage.removeItem('financeai-state');
+            
+            this.showToast('All data cleared successfully', 'success');
+        }
+    }
+
+    // State Persistence
+    saveState() {
+        if (this.state.settings.persistConversations || 
+            this.state.settings.persistTransactions || 
+            this.state.settings.persistMemory) {
+            
+            const stateToSave = {
+                conversations: this.state.settings.persistConversations ? this.state.currentConversation : [],
+                transactions: this.state.settings.persistTransactions ? this.state.transactions : [],
+                memory: this.state.settings.persistMemory ? {
+                    ...this.state.memory,
+                    keywordIndex: Array.from(this.state.memory.keywordIndex.entries())
+                } : { summary: '', profile: '', keywordIndex: [] },
+                settings: this.state.settings
+            };
+
+            localStorage.setItem('financeai-state', JSON.stringify(stateToSave));
+        }
+    }
+
+    loadState() {
+        try {
+            const saved = localStorage.getItem('financeai-state');
+            if (saved) {
+                const parsedState = JSON.parse(saved);
+                
+                if (parsedState.conversations) this.state.currentConversation = parsedState.conversations;
+                if (parsedState.transactions) this.state.transactions = parsedState.transactions;
+                if (parsedState.memory) {
+                    this.state.memory = {
+                        ...parsedState.memory,
+                        keywordIndex: new Map(parsedState.memory.keywordIndex || [])
+                    };
+                }
+                if (parsedState.settings) this.state.settings = { ...this.state.settings, ...parsedState.settings };
+
+                // Update UI with loaded settings
+                document.getElementById('api-key').value = this.state.settings.apiKey;
+                document.getElementById('model-select').value = this.state.settings.model;
+                document.getElementById('temperature').value = this.state.settings.temperature;
+                document.getElementById('max-tokens').value = this.state.settings.maxTokens;
+                document.getElementById('keep-messages').value = this.state.settings.keepMessages;
+                
+                // Update persistence checkboxes
+                document.getElementById('persist-conversations').checked = this.state.settings.persistConversations;
+                document.getElementById('persist-transactions').checked = this.state.settings.persistTransactions;
+                document.getElementById('persist-memory').checked = this.state.settings.persistMemory;
+
+                // Render loaded chat messages
+                const messagesContainer = document.getElementById('chat-messages');
+                this.state.currentConversation.forEach(msg => {
+                    this.addMessageToDOM(msg);
+                });
+            }
+        } catch (error) {
+            console.error('Error loading state:', error);
+            this.showToast('Error loading saved data', 'warning');
+        }
+    }
 }
 
-// Initialize
+// Initialize the application when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    window.financeAnalyzer = new FinanceAnalyzer();
+    window.financeApp = new FinanceAnalyzer();
 });
+
+// Handle mobile sidebar toggle (if needed)
+function toggleSidebar() {
+    document.body.classList.toggle('sidebar-open');
+}
