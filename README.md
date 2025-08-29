@@ -18,7 +18,7 @@ Built with **HTML, TailwindCSS, and JavaScript**, the project is lightweight and
 ## 🛠️ Tech Stack
 - **Frontend:** HTML, TailwindCSS, JavaScript  
 - **Build Tool:** Tailwind CLI  
-- **Deployment:** Netlify  
+- **Deployment:** [Netlify (financeanalyzerbivash.netlify.app)](https://financeanalyzerbivash.netlify.app)  
 
 ---
 
