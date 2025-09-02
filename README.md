@@ -23,15 +23,19 @@ Built with **HTML, TailwindCSS, and JavaScript**, the project is lightweight and
 ---
 
 ## 📂 Project Structure
+
+```text
 finance-analyzer/
-│── index.html # Main entry point
-│── styles.css # Tailwind input file
-│── dist/
-│ └── styles.css # Compiled Tailwind CSS
-│── js/
-│ └── app.js # Main JavaScript logic
-│── tailwind.config.js # Tailwind configuration
-│── postcss.config.js # PostCSS configuration
+├── index.html          # Main application dashboard and UI layout
+├── styles.css          # Custom styling, dark theme & glassmorphism
+├── script.js           # Core finance logic, state management & AI integration
+├── server.js           # Express proxy server for API key protection & rate limiting
+├── api.py              # Python test script for Together AI completions
+├── logo.png            # App logo asset
+├── netlify.toml        # Netlify production build & security headers
+├── .gitignore          # Ignored dependencies and cache files
+└── README.md           # Project documentation and guide
+```
 
 
 ---
