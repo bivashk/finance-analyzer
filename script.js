@@ -15,8 +15,9 @@ class FinanceAnalyzer {
                 keywordIndex: new Map()
             },
             settings: {
-                apiKey: 'tgp_v1_o319HuxtA3Phy_VoWmflw1_WXLLKXZENiz2PbD8Q6UA',
-                model: 'openai/gpt-oss-20b',
+                provider: 'groq',
+                apiKey: '',
+                model: 'llama-3.3-70b-versatile',
                 temperature: 0.25,
                 maxTokens: 800,
                 keepMessages: 12,
@@ -27,11 +28,62 @@ class FinanceAnalyzer {
             }
         };
 
+        // Multi-Provider configuration
+        this.providers = {
+            groq: {
+                name: 'Groq (Free & Ultra Fast)',
+                url: 'https://api.groq.com/openai/v1/chat/completions',
+                models: [
+                    { id: 'llama-3.3-70b-versatile', name: 'Llama 3.3 70B' },
+                    { id: 'llama-3.1-8b-instant', name: 'Llama 3.1 8B' },
+                    { id: 'mixtral-8x7b-32768', name: 'Mixtral 8x7B' }
+                ],
+                placeholder: 'gsk_... (Free at console.groq.com)'
+            },
+            gemini: {
+                name: 'Google Gemini (Free API)',
+                url: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',
+                models: [
+                    { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash' },
+                    { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash' }
+                ],
+                placeholder: 'AIza... (Free at aistudio.google.com)'
+            },
+            openai: {
+                name: 'OpenAI (ChatGPT)',
+                url: 'https://api.openai.com/v1/chat/completions',
+                models: [
+                    { id: 'gpt-4o-mini', name: 'GPT-4o Mini' },
+                    { id: 'gpt-4o', name: 'GPT-4o' },
+                    { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo' }
+                ],
+                placeholder: 'sk-... (platform.openai.com)'
+            },
+            openrouter: {
+                name: 'OpenRouter (Free Models)',
+                url: 'https://openrouter.ai/api/v1/chat/completions',
+                models: [
+                    { id: 'meta-llama/llama-3.1-8b-instruct:free', name: 'Llama 3.1 8B (Free)' },
+                    { id: 'google/gemini-2.0-flash-exp:free', name: 'Gemini 2.0 Flash (Free)' }
+                ],
+                placeholder: 'sk-or-... (openrouter.ai)'
+            },
+            together: {
+                name: 'Together AI',
+                url: 'https://api.together.xyz/v1/chat/completions',
+                models: [
+                    { id: 'meta-llama/Llama-2-7b-chat-hf', name: 'Llama-2-7B' },
+                    { id: 'mistralai/Mistral-7B-Instruct-v0.1', name: 'Mistral-7B' },
+                    { id: 'openai/gpt-oss-20b', name: 'GPT-OSS-20B' }
+                ],
+                placeholder: 'tgp_... (api.together.ai)'
+            }
+        };
+
         // API configuration
         this.apiConfig = {
-            baseUrl: 'https://api.together.xyz/v1/chat/completions',
             timeout: 20000,
-            retryAttempts: 2,
+            retryAttempts: 1,
             retryDelay: 1000
         };
 
@@ -62,6 +114,7 @@ Keep responses concise and high-impact.`
     // Initialize the application
     async init() {
         this.loadState();
+        this.populateModelDropdown(true);
         this.setupEventListeners();
         this.setupTabs();
         this.renderTransactions();
@@ -73,6 +126,60 @@ Keep responses concise and high-impact.`
         document.documentElement.classList.toggle('light', this.state.settings.theme === 'light');
         
         this.showToast('Welcome to FinanceAI! 🚀', 'success');
+    }
+
+    setProvider(providerKey, keepModel = false) {
+        if (!this.providers[providerKey]) return;
+        this.state.settings.provider = providerKey;
+        
+        const providerSelect = document.getElementById('provider-select');
+        if (providerSelect) providerSelect.value = providerKey;
+
+        const apiKeyInput = document.getElementById('api-key');
+        if (apiKeyInput && this.providers[providerKey].placeholder) {
+            apiKeyInput.placeholder = this.providers[providerKey].placeholder;
+        }
+
+        this.populateModelDropdown(keepModel);
+        this.saveState();
+    }
+
+    populateModelDropdown(keepModel = false) {
+        const provider = this.providers[this.state.settings.provider || 'groq'] || this.providers.groq;
+        const modelSelect = document.getElementById('model-select');
+        if (!provider || !modelSelect) return;
+
+        modelSelect.innerHTML = provider.models.map(m => 
+            `<option value="${m.id}">${m.name}</option>`
+        ).join('');
+
+        if (keepModel && provider.models.some(m => m.id === this.state.settings.model)) {
+            modelSelect.value = this.state.settings.model;
+        } else {
+            this.state.settings.model = provider.models[0].id;
+            modelSelect.value = this.state.settings.model;
+        }
+    }
+
+    detectProviderFromKey(key) {
+        if (!key) return;
+        const k = key.trim();
+        if (k.startsWith('gsk_')) {
+            this.setProvider('groq');
+            this.showToast('Auto-detected Groq API Key! ⚡', 'info');
+        } else if (k.startsWith('AIza')) {
+            this.setProvider('gemini');
+            this.showToast('Auto-detected Google Gemini Key! 🌟', 'info');
+        } else if (k.startsWith('sk-or-')) {
+            this.setProvider('openrouter');
+            this.showToast('Auto-detected OpenRouter Key! 🌐', 'info');
+        } else if (k.startsWith('sk-')) {
+            this.setProvider('openai');
+            this.showToast('Auto-detected OpenAI Key! 🤖', 'info');
+        } else if (k.startsWith('tgp_')) {
+            this.setProvider('together');
+            this.showToast('Auto-detected Together AI Key! 🤝', 'info');
+        }
     }
 
     // Event Listeners Setup
@@ -94,11 +201,24 @@ Keep responses concise and high-impact.`
         });
         document.getElementById('clear-chat').addEventListener('click', () => this.clearChat());
 
-        // Settings inputs
-        document.getElementById('api-key').addEventListener('change', (e) => {
-            this.state.settings.apiKey = e.target.value;
-            this.saveState();
-        });
+        // Provider & API Settings inputs
+        const providerSelect = document.getElementById('provider-select');
+        if (providerSelect) {
+            providerSelect.addEventListener('change', (e) => {
+                this.setProvider(e.target.value);
+            });
+        }
+
+        const apiKeyInput = document.getElementById('api-key');
+        if (apiKeyInput) {
+            apiKeyInput.addEventListener('input', (e) => {
+                const key = e.target.value.trim();
+                this.state.settings.apiKey = key;
+                this.detectProviderFromKey(key);
+                this.saveState();
+            });
+        }
+
         document.getElementById('model-select').addEventListener('change', (e) => {
             this.state.settings.model = e.target.value;
             this.saveState();
@@ -293,16 +413,22 @@ Keep responses concise and high-impact.`
 
     // API Communication
     async callAPI(message) {
+        if (!this.state.settings.apiKey) {
+            throw new Error('No API key provided. Using local analytics fallback.');
+        }
+
         const prompt = this.buildPrompt(message);
+        const provider = this.providers[this.state.settings.provider || 'groq'] || this.providers.groq;
+        
         const requestBody = {
             model: this.state.settings.model,
             messages: prompt,
             temperature: this.state.settings.temperature,
             max_tokens: this.state.settings.maxTokens,
-            stream: false // Simplified for now
+            stream: false
         };
 
-        const response = await this.makeRequest(this.apiConfig.baseUrl, {
+        const response = await this.makeRequest(provider.url, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${this.state.settings.apiKey}`,
@@ -312,7 +438,7 @@ Keep responses concise and high-impact.`
         });
 
         if (response.choices && response.choices[0]) {
-            return response.choices[0].message.content;
+            return response.choices[0].message ? response.choices[0].message.content : response.choices[0].text;
         } else {
             throw new Error('Invalid API response');
         }
@@ -1241,9 +1367,24 @@ Average Transaction: ${this.formatCurrency(expenses / this.state.transactions.fi
                 }
                 if (parsedState.settings) this.state.settings = { ...this.state.settings, ...parsedState.settings };
 
+                // Reset outdated Together key if present
+                if (this.state.settings.apiKey && this.state.settings.apiKey.startsWith('tgp_v1_o319')) {
+                    this.state.settings.apiKey = '';
+                }
+
                 // Update UI with loaded settings
-                document.getElementById('api-key').value = this.state.settings.apiKey;
-                document.getElementById('model-select').value = this.state.settings.model;
+                const providerSelect = document.getElementById('provider-select');
+                if (providerSelect && this.state.settings.provider) {
+                    providerSelect.value = this.state.settings.provider;
+                }
+                const apiKeyInput = document.getElementById('api-key');
+                if (apiKeyInput) {
+                    apiKeyInput.value = this.state.settings.apiKey || '';
+                    const provider = this.providers[this.state.settings.provider || 'groq'];
+                    if (provider && provider.placeholder) {
+                        apiKeyInput.placeholder = provider.placeholder;
+                    }
+                }
                 document.getElementById('temperature').value = this.state.settings.temperature;
                 document.getElementById('max-tokens').value = this.state.settings.maxTokens;
                 document.getElementById('keep-messages').value = this.state.settings.keepMessages;
