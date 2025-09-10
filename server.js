@@ -14,6 +14,8 @@ const PORT = process.env.PORT || 3001;
 // Environment variables
 const TOGETHER_API_KEY = process.env.TOGETHER_API_KEY || 'your-together-api-key-here';
 const TOGETHER_API_URL = 'https://api.together.xyz/v1/chat/completions';
+const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
+const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 // Middleware
 app.use(cors({

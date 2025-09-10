@@ -1372,6 +1372,13 @@ Average Transaction: ${this.formatCurrency(expenses / this.state.transactions.fi
                     this.state.settings.apiKey = '';
                 }
 
+                // Load from window.CONFIG if local config exists and no key set
+                if (!this.state.settings.apiKey && window.CONFIG && window.CONFIG.GROQ_API_KEY) {
+                    this.state.settings.apiKey = window.CONFIG.GROQ_API_KEY;
+                    this.state.settings.provider = 'groq';
+                    this.state.settings.model = 'llama-3.3-70b-versatile';
+                }
+
                 // Update UI with loaded settings
                 const providerSelect = document.getElementById('provider-select');
                 if (providerSelect && this.state.settings.provider) {
@@ -1399,6 +1406,17 @@ Average Transaction: ${this.formatCurrency(expenses / this.state.transactions.fi
                 this.state.currentConversation.forEach(msg => {
                     this.addMessageToDOM(msg);
                 });
+            } else {
+                // First-time visit with no saved state
+                if (window.CONFIG && window.CONFIG.GROQ_API_KEY) {
+                    this.state.settings.apiKey = window.CONFIG.GROQ_API_KEY;
+                    this.state.settings.provider = 'groq';
+                    this.state.settings.model = 'llama-3.3-70b-versatile';
+                    const apiKeyInput = document.getElementById('api-key');
+                    if (apiKeyInput) apiKeyInput.value = this.state.settings.apiKey;
+                    const providerSelect = document.getElementById('provider-select');
+                    if (providerSelect) providerSelect.value = 'groq';
+                }
             }
         } catch (error) {
             console.error('Error loading state:', error);
