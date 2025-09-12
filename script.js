@@ -17,7 +17,7 @@ class FinanceAnalyzer {
             settings: {
                 provider: 'groq',
                 apiKey: '',
-                model: 'llama-3.3-70b-versatile',
+                model: 'qwen/qwen3.8-27b',
                 temperature: 0.25,
                 maxTokens: 800,
                 keepMessages: 12,
@@ -34,9 +34,9 @@ class FinanceAnalyzer {
                 name: 'Groq (Free & Ultra Fast)',
                 url: 'https://api.groq.com/openai/v1/chat/completions',
                 models: [
-                    { id: 'llama-3.3-70b-versatile', name: 'Llama 3.3 70B' },
-                    { id: 'llama-3.1-8b-instant', name: 'Llama 3.1 8B' },
-                    { id: 'mixtral-8x7b-32768', name: 'Mixtral 8x7B' }
+                    { id: 'qwen/qwen3.8-27b', name: 'Qwen 3.8 27B (Fast & Accurate)' },
+                    { id: 'openai/gpt-oss-120b', name: 'GPT-OSS 120B (Deep Reasoning)' },
+                    { id: 'openai/gpt-oss-20b', name: 'GPT-OSS 20B (Compact)' }
                 ],
                 placeholder: 'gsk_... (Free at console.groq.com)'
             },
@@ -1376,7 +1376,13 @@ Average Transaction: ${this.formatCurrency(expenses / this.state.transactions.fi
                 if (!this.state.settings.apiKey && window.CONFIG && window.CONFIG.GROQ_API_KEY) {
                     this.state.settings.apiKey = window.CONFIG.GROQ_API_KEY;
                     this.state.settings.provider = 'groq';
-                    this.state.settings.model = 'llama-3.3-70b-versatile';
+                    this.state.settings.model = 'qwen/qwen3.8-27b';
+                }
+
+                // Ensure model belongs to active provider (fix old cached models)
+                const activeProvider = this.providers[this.state.settings.provider || 'groq'] || this.providers.groq;
+                if (!activeProvider.models.some(m => m.id === this.state.settings.model)) {
+                    this.state.settings.model = activeProvider.models[0].id;
                 }
 
                 // Update UI with loaded settings
@@ -1411,7 +1417,7 @@ Average Transaction: ${this.formatCurrency(expenses / this.state.transactions.fi
                 if (window.CONFIG && window.CONFIG.GROQ_API_KEY) {
                     this.state.settings.apiKey = window.CONFIG.GROQ_API_KEY;
                     this.state.settings.provider = 'groq';
-                    this.state.settings.model = 'llama-3.3-70b-versatile';
+                    this.state.settings.model = 'qwen/qwen3.8-27b';
                     const apiKeyInput = document.getElementById('api-key');
                     if (apiKeyInput) apiKeyInput.value = this.state.settings.apiKey;
                     const providerSelect = document.getElementById('provider-select');
