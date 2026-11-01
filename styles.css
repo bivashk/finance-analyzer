@@ -1015,3 +1015,6 @@ textarea {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.5);
 }
+/* Keep expanded analytics navigation usable on smaller screens. */
+nav > .flex { overflow-x: auto; }
+.tab-button { white-space: nowrap; }

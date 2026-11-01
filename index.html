@@ -29,8 +29,13 @@
                 </div>
             </div>
 
-            <!-- API Settings -->
-            <div class="mb-6">
+            <div class="mb-6 p-3 bg-white/5 rounded-lg text-sm">
+                <h3 class="font-medium mb-2">Banking analytics demo</h3>
+                <p class="text-xs text-gray-400">Validated imports, reviewable categories and insights with supporting evidence. Classifier trained on synthetic data.</p>
+                <a href="/api/evaluation" target="_blank" rel="noopener" class="block text-blue-400 mt-2">View model evaluation</a>
+            </div>
+            <!-- Legacy settings retained for state compatibility -->
+            <div class="mb-6" hidden>
                 <h3 class="text-sm font-medium mb-3">API Settings</h3>
                 <div class="space-y-3">
                     <div>
@@ -45,8 +50,7 @@
                     </div>
                     <div>
                         <label class="block text-xs text-gray-400 mb-1">API Key</label>
-                        <input type="password" id="api-key" 
-                               placeholder="Enter API Key (e.g., gsk_... or AIza...)"
+                        <input type="password" id="api-key" disabled placeholder="Configured on the local server"
                                class="w-full p-2 bg-white/5 border border-white/10 rounded-lg text-sm focus:border-blue-500 focus:outline-none">
                     </div>
                     <div>
@@ -79,8 +83,8 @@
                     <button id="download-sample" class="w-full p-2 bg-gradient-to-r from-green-600 to-green-700 rounded-lg text-sm font-medium hover:from-green-700 hover:to-green-800 transition-all">
                         Download Sample CSV
                     </button>
-                    <button id="generate-insights" class="w-full p-2 bg-gradient-to-r from-purple-600 to-purple-700 rounded-lg text-sm font-medium hover:from-purple-700 hover:to-purple-800 transition-all">
-                        Generate AI Insights
+                    <button title="Calculated metrics with supporting transaction IDs" id="generate-insights" class="w-full p-2 bg-gradient-to-r from-purple-600 to-purple-700 rounded-lg text-sm font-medium hover:from-purple-700 hover:to-purple-800 transition-all">
+                        Generate Evidence-backed Insights
                     </button>
                     <button id="rebuild-summary" class="w-full p-2 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg text-sm font-medium hover:from-blue-700 hover:to-blue-800 transition-all">
                         Rebuild Memory
@@ -98,7 +102,7 @@
                     </svg>
                     <div>
                         <p class="text-xs text-yellow-200 font-medium">Security Notice</p>
-                        <p class="text-xs text-yellow-300/80 mt-1">API keys are visible in browser. Use the optional proxy server for production.</p>
+                        <p class="text-xs text-yellow-300/80 mt-1">Local single-user demo. Model suggestions use synthetic training data; review before accepting.</p>
                     </div>
                 </div>
             </div>
@@ -118,6 +122,8 @@
                     <button class="tab-button px-4 py-2 rounded-lg text-sm font-medium transition-all" data-tab="transactions">
                         Transactions
                     </button>
+                    <button class="tab-button px-4 py-2 rounded-lg text-sm font-medium transition-all" data-tab="intelligence">Customer intelligence</button>
+                    <button class="tab-button px-4 py-2 rounded-lg text-sm font-medium transition-all" data-tab="operations">Model performance</button>
                     <button class="tab-button px-4 py-2 rounded-lg text-sm font-medium transition-all" data-tab="memory">
                         Memory
                     </button>
@@ -180,6 +186,25 @@
                     </div>
                 </div>
 
+                <div id="intelligence-tab" class="tab-content h-full overflow-y-auto p-6">
+                    <h2 class="text-xl font-semibold mb-4">Customer intelligence</h2>
+                    <p class="text-sm text-gray-400 mb-4">Understand recorded spending behavior and compare customer groups. Profiles support budgeting discussions.</p>
+                    <button id="profile-button" class="px-4 py-2 bg-blue-600 rounded-lg">Analyze my recorded behavior</button>
+                    <div id="customer-profile" class="my-4"></div>
+                    <h3 class="text-lg font-semibold mt-6 mb-3">Customer groups</h3>
+                    <button id="cohort-demo" class="px-4 py-2 bg-purple-600 rounded-lg">Explore synthetic customer demo</button>
+                    <button id="cohort-upload-button" class="px-4 py-2 bg-blue-600 rounded-lg">Upload customer CSV</button>
+                    <input type="file" id="cohort-upload" accept=".csv" class="hidden">
+                    <p class="text-xs text-gray-400 mt-3">CSV columns: Customer_ID, Date, Description, Amount, Category. Use anonymous IDs; each customer needs 3 observed months and 10 transactions.</p>
+                    <div id="customer-segments" class="mt-4"></div>
+                    <div id="segment-chart" class="mt-4"></div>
+                </div>
+                <div id="operations-tab" class="tab-content h-full overflow-y-auto p-6">
+                    <h2 class="text-xl font-semibold mb-4">Model performance</h2>
+                    <p class="text-sm text-gray-400 mb-4">Measure categorization coverage, review workload and inference performance for this browser session.</p>
+                    <button id="refresh-operations" class="px-4 py-2 bg-blue-600 rounded-lg">Refresh session metrics</button>
+                    <div id="operations-report" class="mt-4">Categorize transactions and review predictions to collect evidence.</div>
+                </div>
                 <!-- Transactions Tab -->
                 <div id="transactions-tab" class="tab-content h-full flex flex-col">
                     <div class="p-6 border-b border-white/10">
@@ -190,7 +215,7 @@
                                 <button id="upload-button" class="px-4 py-2 bg-blue-600 rounded-lg text-sm font-medium hover:bg-blue-700 transition-all">
                                     Upload CSV
                                 </button>
-                                <button id="categorize-button" class="px-4 py-2 bg-purple-600 rounded-lg text-sm font-medium hover:bg-purple-700 transition-all">
+                                <button title="TF-IDF classifier trained on synthetic demonstration data" id="categorize-button" class="px-4 py-2 bg-purple-600 rounded-lg text-sm font-medium hover:bg-purple-700 transition-all">
                                     Auto-Categorize
                                 </button>
                             </div>
@@ -230,7 +255,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div>
                         <h3 class="text-lg font-semibold mb-4">User Profile</h3>
                         <div class="bg-white/5 border border-white/10 rounded-xl p-4">
@@ -247,7 +272,7 @@
                 <div id="settings-tab" class="tab-content h-full overflow-y-auto p-6">
                     <div class="max-w-2xl">
                         <h2 class="text-xl font-semibold mb-6">Settings</h2>
-                        
+
                         <div class="space-y-6">
                             <div class="setting-section">
                                 <h3 class="text-lg font-medium mb-4">Data Persistence</h3>
@@ -318,7 +343,7 @@
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.26.0/plotly.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/motion@10.16.2/dist/motion.js"></script>
-    <script src="config.js" onerror="this.remove()"></script>
+
     <script src="script.js"></script>
 </body>
 </html>

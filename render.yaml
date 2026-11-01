@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: finance-analyzer-api
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./deployment/Dockerfile.render
+    healthCheckPath: /api/health
+    autoDeploy: false
+    envVars:
+      - key: FINANCE_PUBLIC_DEMO
+        value: "1"
+      - key: FINANCE_HOST
+        value: 0.0.0.0
+      - key: FINANCE_CLASSIFIER
+        value: transformer
+      - key: FINANCE_MODEL_PATH
+        value: /app/models/merchant/transformer
+      - key: FINANCE_PROXY_TOKEN
+        sync: false

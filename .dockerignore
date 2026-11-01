@@ -1,0 +1,11 @@
+.git
+.venv
+.env
+.env.*
+config.js
+node_modules
+.netlify
+data/public
+data/*.sqlite3*
+.cache
+__pycache__

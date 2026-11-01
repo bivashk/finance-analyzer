@@ -1,0 +1,80 @@
+{
+  "dataset": "DoDataThings/us-bank-transaction-categories-v2",
+  "source_url": "https://huggingface.co/datasets/DoDataThings/us-bank-transaction-categories-v2",
+  "revision": "3e8d052cb7b362fb1a04b6064d2331982553ea56",
+  "license": "MIT",
+  "provenance": "Synthetic bank-format descriptions, not real customer transactions.",
+  "source_rows": 68000,
+  "source_sha256": {
+    "transactions-synthetic.csv": "0424aed6e76f74a5b3b1ff61ccec43bc321622e6806da353b910b3b2c8108f6e",
+    "README.md": "fa90b2937851fae225d0d8acb11b2787852285ebc5fdf24ff7fcb86b89e0a598"
+  },
+  "prepared_sha256": "45f1821a1a9fae18750691bdf70e9955a48c74c7a405f5d41e5a576f55119840",
+  "split": "Seed 42; normalized-description-group-disjoint train/validation/test. Merchant overlap may remain.",
+  "split_counts": {
+    "test": 850,
+    "validation": 510,
+    "train": 1700
+  },
+  "class_counts": {
+    "train": {
+      "Education": 100,
+      "Entertainment": 100,
+      "Fees": 100,
+      "Groceries": 100,
+      "Healthcare": 100,
+      "Income": 100,
+      "Insurance": 100,
+      "Mortgage": 100,
+      "Personal Care": 100,
+      "Rent": 100,
+      "Restaurants": 100,
+      "Shopping": 100,
+      "Subscription": 100,
+      "Transfer": 100,
+      "Transportation": 100,
+      "Travel": 100,
+      "Utilities": 100
+    },
+    "validation": {
+      "Education": 30,
+      "Entertainment": 30,
+      "Fees": 30,
+      "Groceries": 30,
+      "Healthcare": 30,
+      "Income": 30,
+      "Insurance": 30,
+      "Mortgage": 30,
+      "Personal Care": 30,
+      "Rent": 30,
+      "Restaurants": 30,
+      "Shopping": 30,
+      "Subscription": 30,
+      "Transfer": 30,
+      "Transportation": 30,
+      "Travel": 30,
+      "Utilities": 30
+    },
+    "test": {
+      "Education": 50,
+      "Entertainment": 50,
+      "Fees": 50,
+      "Groceries": 50,
+      "Healthcare": 50,
+      "Income": 50,
+      "Insurance": 50,
+      "Mortgage": 50,
+      "Personal Care": 50,
+      "Rent": 50,
+      "Restaurants": 50,
+      "Shopping": 50,
+      "Subscription": 50,
+      "Transfer": 50,
+      "Transportation": 50,
+      "Travel": 50,
+      "Utilities": 50
+    }
+  },
+  "discarded_conflicting_groups": 19,
+  "limits": "Up to 100 train, 30 validation, 50 test examples per category. No claim of minimal sufficient labels."
+}

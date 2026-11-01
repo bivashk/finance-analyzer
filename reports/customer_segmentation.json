@@ -1,0 +1,1040 @@
+{
+  "customers": [
+    {
+      "customer_id": "demo-customer-01",
+      "cluster": 1,
+      "features": {
+        "transactions_per_month": 10.0,
+        "average_monthly_expenses": 15704.365,
+        "savings_ratio": 0.7376,
+        "monthly_expense_variability": 0.0204,
+        "discretionary_share": 0.1127,
+        "recurring_expense_share": 0.7641
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 60,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 60,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-02",
+      "cluster": 0,
+      "features": {
+        "transactions_per_month": 12.0,
+        "average_monthly_expenses": 34038.69,
+        "savings_ratio": 0.0317,
+        "monthly_expense_variability": 0.0121,
+        "discretionary_share": 0.2444,
+        "recurring_expense_share": 0.4994
+      },
+      "rule_segment": "Low recorded surplus",
+      "recommended_action": "Review the largest expense categories before setting a monthly budget.",
+      "observed_months": 6,
+      "transactions": 72,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 72,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-03",
+      "cluster": 3,
+      "features": {
+        "transactions_per_month": 14.0,
+        "average_monthly_expenses": 32224.9217,
+        "savings_ratio": 0.356,
+        "monthly_expense_variability": 0.2537,
+        "discretionary_share": 0.3283,
+        "recurring_expense_share": 0.3103
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 84,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 84,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-04",
+      "cluster": 2,
+      "features": {
+        "transactions_per_month": 16.0,
+        "average_monthly_expenses": 19821.305,
+        "savings_ratio": 0.5554,
+        "monthly_expense_variability": 0.0243,
+        "discretionary_share": 0.445,
+        "recurring_expense_share": 0.5871
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 96,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 96,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-05",
+      "cluster": 1,
+      "features": {
+        "transactions_per_month": 10.0,
+        "average_monthly_expenses": 16188.8783,
+        "savings_ratio": 0.7295,
+        "monthly_expense_variability": 0.0174,
+        "discretionary_share": 0.1322,
+        "recurring_expense_share": 0.7796
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 60,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 60,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-06",
+      "cluster": 0,
+      "features": {
+        "transactions_per_month": 12.0,
+        "average_monthly_expenses": 33925.3167,
+        "savings_ratio": 0.042,
+        "monthly_expense_variability": 0.0383,
+        "discretionary_share": 0.2567,
+        "recurring_expense_share": 0.5011
+      },
+      "rule_segment": "Low recorded surplus",
+      "recommended_action": "Review the largest expense categories before setting a monthly budget.",
+      "observed_months": 6,
+      "transactions": 72,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 72,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-07",
+      "cluster": 3,
+      "features": {
+        "transactions_per_month": 14.0,
+        "average_monthly_expenses": 31963.6333,
+        "savings_ratio": 0.3642,
+        "monthly_expense_variability": 0.2476,
+        "discretionary_share": 0.3215,
+        "recurring_expense_share": 0.3129
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 84,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 84,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-08",
+      "cluster": 2,
+      "features": {
+        "transactions_per_month": 16.0,
+        "average_monthly_expenses": 20073.6517,
+        "savings_ratio": 0.5543,
+        "monthly_expense_variability": 0.0277,
+        "discretionary_share": 0.452,
+        "recurring_expense_share": 0.548
+      },
+      "rule_segment": "Discretionary spending focus",
+      "recommended_action": "Review optional purchases and subscriptions against your own goals.",
+      "observed_months": 6,
+      "transactions": 96,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 96,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-09",
+      "cluster": 1,
+      "features": {
+        "transactions_per_month": 10.0,
+        "average_monthly_expenses": 16081.45,
+        "savings_ratio": 0.7318,
+        "monthly_expense_variability": 0.0087,
+        "discretionary_share": 0.1316,
+        "recurring_expense_share": 0.7462
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 60,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 60,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-10",
+      "cluster": 0,
+      "features": {
+        "transactions_per_month": 12.0,
+        "average_monthly_expenses": 33172.7467,
+        "savings_ratio": 0.054,
+        "monthly_expense_variability": 0.0428,
+        "discretionary_share": 0.2382,
+        "recurring_expense_share": 0.5125
+      },
+      "rule_segment": "Low recorded surplus",
+      "recommended_action": "Review the largest expense categories before setting a monthly budget.",
+      "observed_months": 6,
+      "transactions": 72,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 72,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-11",
+      "cluster": 3,
+      "features": {
+        "transactions_per_month": 14.0,
+        "average_monthly_expenses": 30986.7183,
+        "savings_ratio": 0.3794,
+        "monthly_expense_variability": 0.2409,
+        "discretionary_share": 0.3212,
+        "recurring_expense_share": 0.3227
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 84,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 84,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-12",
+      "cluster": 2,
+      "features": {
+        "transactions_per_month": 16.0,
+        "average_monthly_expenses": 20466.2667,
+        "savings_ratio": 0.5482,
+        "monthly_expense_variability": 0.0276,
+        "discretionary_share": 0.4625,
+        "recurring_expense_share": 0.5375
+      },
+      "rule_segment": "Discretionary spending focus",
+      "recommended_action": "Review optional purchases and subscriptions against your own goals.",
+      "observed_months": 6,
+      "transactions": 96,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 96,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-13",
+      "cluster": 1,
+      "features": {
+        "transactions_per_month": 10.0,
+        "average_monthly_expenses": 16020.6767,
+        "savings_ratio": 0.7353,
+        "monthly_expense_variability": 0.0269,
+        "discretionary_share": 0.1308,
+        "recurring_expense_share": 0.749
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 60,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 60,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-14",
+      "cluster": 0,
+      "features": {
+        "transactions_per_month": 12.0,
+        "average_monthly_expenses": 34651.56,
+        "savings_ratio": 0.0075,
+        "monthly_expense_variability": 0.0183,
+        "discretionary_share": 0.2523,
+        "recurring_expense_share": 0.4906
+      },
+      "rule_segment": "Low recorded surplus",
+      "recommended_action": "Review the largest expense categories before setting a monthly budget.",
+      "observed_months": 6,
+      "transactions": 72,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 72,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-15",
+      "cluster": 3,
+      "features": {
+        "transactions_per_month": 14.0,
+        "average_monthly_expenses": 32767.1233,
+        "savings_ratio": 0.3456,
+        "monthly_expense_variability": 0.2406,
+        "discretionary_share": 0.3334,
+        "recurring_expense_share": 0.3052
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 84,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 84,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-16",
+      "cluster": 2,
+      "features": {
+        "transactions_per_month": 16.0,
+        "average_monthly_expenses": 19720.2483,
+        "savings_ratio": 0.5619,
+        "monthly_expense_variability": 0.0276,
+        "discretionary_share": 0.4422,
+        "recurring_expense_share": 0.5578
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 96,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 96,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-17",
+      "cluster": 1,
+      "features": {
+        "transactions_per_month": 10.0,
+        "average_monthly_expenses": 15964.29,
+        "savings_ratio": 0.735,
+        "monthly_expense_variability": 0.0142,
+        "discretionary_share": 0.1213,
+        "recurring_expense_share": 0.7517
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 60,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 60,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-18",
+      "cluster": 0,
+      "features": {
+        "transactions_per_month": 12.0,
+        "average_monthly_expenses": 33637.9,
+        "savings_ratio": 0.0382,
+        "monthly_expense_variability": 0.0147,
+        "discretionary_share": 0.2647,
+        "recurring_expense_share": 0.5054
+      },
+      "rule_segment": "Low recorded surplus",
+      "recommended_action": "Review the largest expense categories before setting a monthly budget.",
+      "observed_months": 6,
+      "transactions": 72,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 72,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-19",
+      "cluster": 3,
+      "features": {
+        "transactions_per_month": 14.0,
+        "average_monthly_expenses": 32200.0667,
+        "savings_ratio": 0.3543,
+        "monthly_expense_variability": 0.2309,
+        "discretionary_share": 0.3486,
+        "recurring_expense_share": 0.3106
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 84,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 84,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-20",
+      "cluster": 2,
+      "features": {
+        "transactions_per_month": 16.0,
+        "average_monthly_expenses": 20477.5767,
+        "savings_ratio": 0.5462,
+        "monthly_expense_variability": 0.0207,
+        "discretionary_share": 0.4628,
+        "recurring_expense_share": 0.6082
+      },
+      "rule_segment": "Discretionary spending focus",
+      "recommended_action": "Review optional purchases and subscriptions against your own goals.",
+      "observed_months": 6,
+      "transactions": 96,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 96,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-21",
+      "cluster": 1,
+      "features": {
+        "transactions_per_month": 10.0,
+        "average_monthly_expenses": 15835.3383,
+        "savings_ratio": 0.7366,
+        "monthly_expense_variability": 0.0172,
+        "discretionary_share": 0.1185,
+        "recurring_expense_share": 0.7578
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 60,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 60,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-22",
+      "cluster": 0,
+      "features": {
+        "transactions_per_month": 12.0,
+        "average_monthly_expenses": 34610.0033,
+        "savings_ratio": 0.0065,
+        "monthly_expense_variability": 0.0158,
+        "discretionary_share": 0.2487,
+        "recurring_expense_share": 0.5465
+      },
+      "rule_segment": "Low recorded surplus",
+      "recommended_action": "Review the largest expense categories before setting a monthly budget.",
+      "observed_months": 6,
+      "transactions": 72,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 72,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-23",
+      "cluster": 3,
+      "features": {
+        "transactions_per_month": 14.0,
+        "average_monthly_expenses": 31630.0217,
+        "savings_ratio": 0.3685,
+        "monthly_expense_variability": 0.2366,
+        "discretionary_share": 0.3564,
+        "recurring_expense_share": 0.3162
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 84,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 84,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-24",
+      "cluster": 2,
+      "features": {
+        "transactions_per_month": 16.0,
+        "average_monthly_expenses": 20320.9483,
+        "savings_ratio": 0.5461,
+        "monthly_expense_variability": 0.0261,
+        "discretionary_share": 0.4587,
+        "recurring_expense_share": 0.5413
+      },
+      "rule_segment": "Discretionary spending focus",
+      "recommended_action": "Review optional purchases and subscriptions against your own goals.",
+      "observed_months": 6,
+      "transactions": 96,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 96,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-25",
+      "cluster": 1,
+      "features": {
+        "transactions_per_month": 10.0,
+        "average_monthly_expenses": 15806.7167,
+        "savings_ratio": 0.7365,
+        "monthly_expense_variability": 0.0149,
+        "discretionary_share": 0.1167,
+        "recurring_expense_share": 0.7592
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 60,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 60,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-26",
+      "cluster": 0,
+      "features": {
+        "transactions_per_month": 12.0,
+        "average_monthly_expenses": 34698.395,
+        "savings_ratio": 0.013,
+        "monthly_expense_variability": 0.029,
+        "discretionary_share": 0.2436,
+        "recurring_expense_share": 0.4899
+      },
+      "rule_segment": "Low recorded surplus",
+      "recommended_action": "Review the largest expense categories before setting a monthly budget.",
+      "observed_months": 6,
+      "transactions": 72,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 72,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-27",
+      "cluster": 3,
+      "features": {
+        "transactions_per_month": 14.0,
+        "average_monthly_expenses": 32524.6567,
+        "savings_ratio": 0.3514,
+        "monthly_expense_variability": 0.2515,
+        "discretionary_share": 0.3482,
+        "recurring_expense_share": 0.3075
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 84,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 84,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-28",
+      "cluster": 2,
+      "features": {
+        "transactions_per_month": 16.0,
+        "average_monthly_expenses": 19886.1583,
+        "savings_ratio": 0.5564,
+        "monthly_expense_variability": 0.0448,
+        "discretionary_share": 0.4469,
+        "recurring_expense_share": 0.5531
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 96,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 96,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-29",
+      "cluster": 1,
+      "features": {
+        "transactions_per_month": 10.0,
+        "average_monthly_expenses": 16191.8767,
+        "savings_ratio": 0.7301,
+        "monthly_expense_variability": 0.0136,
+        "discretionary_share": 0.1231,
+        "recurring_expense_share": 0.7411
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 60,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 60,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-30",
+      "cluster": 0,
+      "features": {
+        "transactions_per_month": 12.0,
+        "average_monthly_expenses": 34311.6833,
+        "savings_ratio": 0.0228,
+        "monthly_expense_variability": 0.0512,
+        "discretionary_share": 0.2505,
+        "recurring_expense_share": 0.4955
+      },
+      "rule_segment": "Low recorded surplus",
+      "recommended_action": "Review the largest expense categories before setting a monthly budget.",
+      "observed_months": 6,
+      "transactions": 72,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 72,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-31",
+      "cluster": 3,
+      "features": {
+        "transactions_per_month": 14.0,
+        "average_monthly_expenses": 32011.87,
+        "savings_ratio": 0.3592,
+        "monthly_expense_variability": 0.2359,
+        "discretionary_share": 0.3524,
+        "recurring_expense_share": 0.3124
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 84,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 84,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-32",
+      "cluster": 2,
+      "features": {
+        "transactions_per_month": 16.0,
+        "average_monthly_expenses": 19865.9917,
+        "savings_ratio": 0.5616,
+        "monthly_expense_variability": 0.0132,
+        "discretionary_share": 0.4463,
+        "recurring_expense_share": 0.5537
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 96,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 96,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-33",
+      "cluster": 1,
+      "features": {
+        "transactions_per_month": 10.0,
+        "average_monthly_expenses": 15816.5283,
+        "savings_ratio": 0.7359,
+        "monthly_expense_variability": 0.0213,
+        "discretionary_share": 0.127,
+        "recurring_expense_share": 0.7587
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 60,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 60,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-34",
+      "cluster": 0,
+      "features": {
+        "transactions_per_month": 12.0,
+        "average_monthly_expenses": 35038.5417,
+        "savings_ratio": -0.0112,
+        "monthly_expense_variability": 0.0135,
+        "discretionary_share": 0.2614,
+        "recurring_expense_share": 0.4852
+      },
+      "rule_segment": "Low recorded surplus",
+      "recommended_action": "Review the largest expense categories before setting a monthly budget.",
+      "observed_months": 6,
+      "transactions": 72,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 72,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-35",
+      "cluster": 3,
+      "features": {
+        "transactions_per_month": 14.0,
+        "average_monthly_expenses": 31089.5983,
+        "savings_ratio": 0.3787,
+        "monthly_expense_variability": 0.2151,
+        "discretionary_share": 0.3324,
+        "recurring_expense_share": 0.3217
+      },
+      "rule_segment": "Consistent recorded surplus",
+      "recommended_action": "Set a savings goal using the surplus observed in the recorded period.",
+      "observed_months": 6,
+      "transactions": 84,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 84,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    },
+    {
+      "customer_id": "demo-customer-36",
+      "cluster": 2,
+      "features": {
+        "transactions_per_month": 16.0,
+        "average_monthly_expenses": 20531.02,
+        "savings_ratio": 0.5416,
+        "monthly_expense_variability": 0.024,
+        "discretionary_share": 0.4642,
+        "recurring_expense_share": 0.5704
+      },
+      "rule_segment": "Discretionary spending focus",
+      "recommended_action": "Review optional purchases and subscriptions against your own goals.",
+      "observed_months": 6,
+      "transactions": 96,
+      "income_recorded": true,
+      "quality": {
+        "accepted": 96,
+        "duplicates": 0,
+        "rejected": []
+      },
+      "limitations": [
+        "Behavioral descriptions only; no credit, fraud, eligibility, or retention prediction.",
+        "Missing months/accounts and transfers counted as income can distort these features.",
+        "Recurring detection uses repeated descriptions and similar amounts across at least 3 months."
+      ]
+    }
+  ],
+  "clusters": [
+    {
+      "cluster": 0,
+      "customers": 9,
+      "mean_features": {
+        "transactions_per_month": 12.0,
+        "average_monthly_expenses": 34231.6485,
+        "savings_ratio": 0.0227,
+        "monthly_expense_variability": 0.0262,
+        "discretionary_share": 0.2512,
+        "recurring_expense_share": 0.5029
+      },
+      "common_rule_segment": "Low recorded surplus"
+    },
+    {
+      "cluster": 1,
+      "customers": 9,
+      "mean_features": {
+        "transactions_per_month": 10.0,
+        "average_monthly_expenses": 15956.68,
+        "savings_ratio": 0.7343,
+        "monthly_expense_variability": 0.0172,
+        "discretionary_share": 0.1238,
+        "recurring_expense_share": 0.7564
+      },
+      "common_rule_segment": "Consistent recorded surplus"
+    },
+    {
+      "cluster": 2,
+      "customers": 9,
+      "mean_features": {
+        "transactions_per_month": 16.0,
+        "average_monthly_expenses": 20129.2407,
+        "savings_ratio": 0.5524,
+        "monthly_expense_variability": 0.0262,
+        "discretionary_share": 0.4534,
+        "recurring_expense_share": 0.5619
+      },
+      "common_rule_segment": "Discretionary spending focus"
+    },
+    {
+      "cluster": 3,
+      "customers": 9,
+      "mean_features": {
+        "transactions_per_month": 14.0,
+        "average_monthly_expenses": 31933.1789,
+        "savings_ratio": 0.3619,
+        "monthly_expense_variability": 0.2392,
+        "discretionary_share": 0.338,
+        "recurring_expense_share": 0.3133
+      },
+      "common_rule_segment": "Consistent recorded surplus"
+    }
+  ],
+  "chosen_k": 4,
+  "silhouette_score": 0.9275019577399117,
+  "mean_seed_stability_adjusted_rand": 1.0,
+  "rule_comparison_adjusted_rand": 0.4123070950208677,
+  "limitations": [
+    "KMeans is fitted on this submitted cohort; these are descriptive clusters, not validated predictive customer outcomes.",
+    "Silhouette measures geometric separation; seed stability does not establish business value.",
+    "No acquisition, engagement, retention uplift, or credit-risk claim is made."
+  ],
+  "provenance": "36 synthetic customer histories; no real customer or business-outcome validation."
+}

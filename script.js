@@ -91,7 +91,8 @@ class FinanceAnalyzer {
         this.categories = [
             'Transport', 'Food & Drink', 'Shopping', 'Entertainment', 
             'Groceries', 'Utilities', 'Income', 'Travel', 'Electronics', 
-            'Fuel', 'Health', 'Fitness', 'Rent', 'Education', 'Fees', 'Other'
+            'Fuel', 'Health', 'Fitness', 'Rent', 'Education', 'Fees', 'Other', 'Restaurants',
+            'Transportation', 'Healthcare', 'Subscription', 'Insurance', 'Mortgage', 'Personal Care', 'Transfer'
         ];
 
         // System prompts
@@ -108,6 +109,8 @@ Output: EXACTLY N lines, one category per line. No extra text.`,
 Keep responses concise and high-impact.`
         };
 
+        this.sessionId = sessionStorage.getItem('finance-session') || crypto.randomUUID().replaceAll('-', '');
+        sessionStorage.setItem('finance-session', this.sessionId);
         this.init();
     }
 
@@ -240,6 +243,12 @@ Keep responses concise and high-impact.`
             this.handleFileUpload(e.target.files[0]);
         });
 
+        document.getElementById('profile-button').addEventListener('click', () => this.analyzeCustomer());
+        document.getElementById('cohort-demo').addEventListener('click', () => this.analyzeCohort());
+        document.getElementById('cohort-upload-button').addEventListener('click', () => document.getElementById('cohort-upload').click());
+        document.getElementById('cohort-upload').addEventListener('change', e => this.analyzeCohort(e.target.files[0]));
+        document.getElementById('refresh-operations').addEventListener('click', () => this.refreshOperations());
+
         // Quick actions
         document.getElementById('download-sample').addEventListener('click', () => this.downloadSampleCSV());
         document.getElementById('generate-insights').addEventListener('click', () => this.generateInsights());
@@ -328,7 +337,7 @@ Keep responses concise and high-impact.`
             this.updateKeywordIndex(response);
         } catch (error) {
             console.warn('API error in chat, using local assistant fallback:', error);
-            const fallbackResponse = this.generateLocalChatResponse(message);
+            const fallbackResponse = 'The analytics service is unavailable. Start python api.py and open http://127.0.0.1:8000 to ask questions about verified financial metrics.';
             this.addMessage('assistant', fallbackResponse);
             this.updateKeywordIndex(message);
             this.updateKeywordIndex(fallbackResponse);
@@ -365,7 +374,7 @@ Keep responses concise and high-impact.`
 
     formatMessage(content) {
         // Basic markdown parsing
-        return content
+        return this.escapeHTML(content)
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.*?)\*/g, '<em>$1</em>')
             .replace(/`([^`]+)`/g, '<code>$1</code>')
@@ -411,37 +420,77 @@ Keep responses concise and high-impact.`
         }
     }
 
-    // API Communication
-    async callAPI(message) {
-        if (!this.state.settings.apiKey) {
-            throw new Error('No API key provided. Using local analytics fallback.');
-        }
-
-        const prompt = this.buildPrompt(message);
-        const provider = this.providers[this.state.settings.provider || 'groq'] || this.providers.groq;
-        
-        const requestBody = {
-            model: this.state.settings.model,
-            messages: prompt,
-            temperature: this.state.settings.temperature,
-            max_tokens: this.state.settings.maxTokens,
-            stream: false
-        };
-
-        const response = await this.makeRequest(provider.url, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${this.state.settings.apiKey}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestBody)
+    // All model requests use the local server; credentials never enter browser storage.
+    async analyticsRequest(path, payload) {
+        return this.makeRequest(path, {
+            method: 'POST', headers: {'Content-Type': 'application/json', 'X-Finance-Session': this.sessionId},
+            body: JSON.stringify(payload)
         });
+    }
 
-        if (response.choices && response.choices[0]) {
-            return response.choices[0].message ? response.choices[0].message.content : response.choices[0].text;
-        } else {
-            throw new Error('Invalid API response');
-        }
+    async analyticsGet(path) {
+        return this.makeRequest(path, {headers: {'X-Finance-Session': this.sessionId}});
+    }
+
+    async analyzeCustomer() {
+        if (!this.state.transactions.length) return this.showToast('Upload transactions first', 'warning');
+        try {
+            const report = await this.analyticsRequest('/api/analyze', {transactions:this.state.transactions});
+            const p = report.customer_profile;
+            if (!p) throw new Error('No valid transactions');
+            document.getElementById('customer-profile').textContent =
+                `${p.rule_segment}. ${p.recommended_action} Observed months: ${p.observed_months}. ` +
+                `Average monthly expenses: ${this.formatCurrency(p.features.average_monthly_expenses)}. ` +
+                (p.income_recorded ? `Recorded surplus: ${(p.features.savings_ratio*100).toFixed(1)}%. ` : 'No income recorded; surplus ratio unavailable. ') +
+                `Recurring expense share: ${(p.features.recurring_expense_share*100).toFixed(1)}%. ` + p.limitations.join(' ');
+        } catch (error) { this.showToast('Behavior analysis unavailable. Check the API and transactions.', 'error'); }
+    }
+
+    async analyzeCohort(file) {
+        const target = document.getElementById('customer-segments');
+        target.textContent = 'Analyzing customer behavior…';
+        try {
+            let report;
+            if (file) report = await this.analyticsRequest('/api/cohort-import', {csv:await file.text()});
+            else {
+                const demo = await this.analyticsGet('/api/customer-demo');
+                report = await this.analyticsRequest('/api/segments', {customers:demo.customers});
+            }
+            target.innerHTML = `<p>${file ? 'Uploaded cohort' : 'Synthetic demonstration'}: ${report.customers.length} customers; ${report.chosen_k} clusters.</p>
+                <p>Separation (silhouette): ${report.silhouette_score.toFixed(3)}. Stability across seeds (ARI): ${report.mean_seed_stability_adjusted_rand.toFixed(3)}.</p>
+                <table class="w-full mt-4"><thead><tr><th>Group</th><th>Customers</th><th>Typical behavior</th><th>Monthly expenses</th></tr></thead><tbody>
+                ${report.clusters.map(c => `<tr><td>${c.cluster+1}</td><td>${c.customers}</td><td>${this.escapeHTML(c.common_rule_segment)}</td><td>${this.formatCurrency(c.mean_features.average_monthly_expenses)}</td></tr>`).join('')}</tbody></table>
+                <p class="text-xs text-gray-400 mt-4">${report.limitations.map(v => this.escapeHTML(v)).join(' ')}</p>`;
+            if (typeof Plotly !== 'undefined') Plotly.newPlot('segment-chart', [{
+                x:report.customers.map(c=>c.features.average_monthly_expenses),
+                y:report.customers.map(c=>c.features.savings_ratio*100),
+                text:report.customers.map(c=>this.escapeHTML(c.customer_id)), mode:'markers',type:'scatter',
+                marker:{color:report.customers.map(c=>c.cluster),size:11}
+            }], {title:'Customer behavior comparison',xaxis:{title:'Average monthly expenses (INR)'},yaxis:{title:'Recorded surplus (%)'},
+                paper_bgcolor:'transparent',plot_bgcolor:'transparent',font:{color:'#aaa'}}, {responsive:true});
+        } catch (error) { target.textContent = 'Unable to analyze this cohort. Use 8–100 distinct customer IDs, each with 3 months and 10 valid transactions; limit the file to 10,000 rows.'; }
+    }
+
+    async refreshOperations() {
+        try {
+            const r = await this.analyticsGet('/api/metrics');
+            const pct = v => v===null ? 'Awaiting observations' : `${(v*100).toFixed(1)}%`;
+            const entries = [
+                ['Prediction events',r.prediction_events], ['Auto-accept coverage',pct(r.auto_accept_coverage)],
+                ['Manual review rate',pct(r.manual_review_rate)], ['Reviewed predictions',r.reviewed_predictions],
+                ['Correction rate among reviewed',pct(r.correction_rate_among_reviewed)],
+                ['Median inference time per transaction',r.batch_amortized_inference_ms_p50===null ? 'Awaiting observations' : `${r.batch_amortized_inference_ms_p50.toFixed(2)} ms`],
+                ['95th percentile inference time per transaction',r.batch_amortized_inference_ms_p95===null ? 'Awaiting observations' : `${r.batch_amortized_inference_ms_p95.toFixed(2)} ms`],
+                ['Estimated compute cost per transaction',r.estimated_compute_cost_per_transaction===null ? 'Not configured' : r.estimated_compute_cost_per_transaction.toFixed(8)]
+            ];
+            document.getElementById('operations-report').innerHTML = entries.map(([label,value])=>`<p class="my-3"><strong>${label}:</strong> ${this.escapeHTML(value)}</p>`).join('') +
+                `<p class="text-xs text-gray-400">${this.escapeHTML(r.cost_status)}. ${r.limitations.map(v=>this.escapeHTML(v)).join(' ')} Records expire after ${r.retention_hours} hours.</p>`;
+        } catch (error) { this.showToast('Session metrics unavailable. Check the API connection.', 'error'); }
+    }
+
+    async callAPI(message) {
+        const response = await this.analyticsRequest('/api/chat', {message, transactions: this.state.transactions});
+        return response.content;
     }
 
     async makeRequest(url, options) {
@@ -591,18 +640,23 @@ Keep responses concise and high-impact.`
     async handleFileUpload(file) {
         if (!file) return;
 
-        const text = await file.text();
-        const transactions = this.parseCSV(text);
-        
-        if (transactions.length > 0) {
-            this.state.transactions = [...this.state.transactions, ...transactions];
+        try {
+            const result = await this.analyticsRequest('/api/import', {csv: await file.text()});
+            const known = new Set(this.state.transactions.map(t => String(t.id)));
+            const added = result.transactions.filter(t => !known.has(String(t.id)))
+                .map(t => ({...t, date: new Date(t.date + 'T00:00:00Z').getTime()}));
+            this.state.transactions.push(...added);
             this.renderTransactions();
             this.updateDashboard();
             this.populateCategoryFilter();
             this.saveState();
-            this.showToast(`Imported ${transactions.length} transactions`, 'success');
-        } else {
-            this.showToast('No valid transactions found in file', 'error');
+            this.showToast(`Imported ${added.length}; ${result.duplicates} duplicates; ${result.rejected.length} rejected`, 'info');
+            if (result.rejected.length) {
+                this.addMessage('assistant', 'Import rejected rows:\n' + result.rejected.map(r => `- Row ${r.row}: ${r.reason}`).join('\n'));
+                this.switchTab('chat');
+            }
+        } catch (error) {
+            this.showToast('Import failed. Start python api.py and open http://127.0.0.1:8000. Check CSV columns and data.', 'error');
         }
     }
 
@@ -681,29 +735,22 @@ Keep responses concise and high-impact.`
         }
 
         try {
-            const descriptions = uncategorized.map(t => t.description).join('\n');
-            const prompt = `${this.prompts.categorization}\n\nTransactions:\n${descriptions}`;
-            
-            const response = await this.callAPI(prompt);
-            const categories = response.split('\n').filter(c => c.trim());
-
-            if (categories.length === uncategorized.length) {
-                uncategorized.forEach((transaction, index) => {
-                    const category = categories[index].trim();
-                    if (this.categories.includes(category)) {
-                        transaction.category = category;
-                    }
-                });
-                this.showToast(`Categorized ${categories.length} transactions via AI`, 'success');
-            } else {
-                throw new Error('Categorization format mismatch');
+            const result = {predictions:[]};
+            for (let offset=0; offset<uncategorized.length; offset+=64) {
+                const batch = await this.analyticsRequest('/api/classify', {transactions:uncategorized.slice(offset,offset+64)});
+                result.predictions.push(...batch.predictions);
             }
-        } catch (error) {
-            console.warn('API error during categorization, using local rule classifier:', error);
-            uncategorized.forEach(transaction => {
-                transaction.category = this.classifyTransactionLocal(transaction.description);
+            uncategorized.forEach((transaction, index) => {
+                const prediction = result.predictions[index];
+                transaction.prediction = prediction;
+                // Low-confidence suggestions remain uncategorized for explicit human review.
+                if (!prediction.needs_review) transaction.category = prediction.category;
             });
-            this.showToast(`Categorized ${uncategorized.length} transactions (Local Rule Engine)`, 'info');
+            const review = result.predictions.filter(p => p.needs_review).length;
+            this.showToast(`Model suggestions ready; ${review} need review. Trained on synthetic demo data.`, 'info');
+        } catch (error) {
+            this.showToast('Classification unavailable. Start the local Python service.', 'error');
+            return;
         }
 
         this.renderTransactions();
@@ -736,7 +783,7 @@ Keep responses concise and high-impact.`
                 ${this.state.transactions.map(transaction => `
                     <tr class="transaction-row">
                         <td>${new Date(transaction.date).toLocaleDateString()}</td>
-                        <td class="max-w-xs truncate">${transaction.description}</td>
+                        <td class="max-w-xs truncate">${this.escapeHTML(transaction.description)}</td>
                         <td class="${transaction.amount >= 0 ? 'text-green-400' : 'text-red-400'}">
                             ${this.formatCurrency(transaction.amount)}
                         </td>
@@ -747,6 +794,7 @@ Keep responses concise and high-impact.`
                                     `<option value="${cat}" ${cat === transaction.category ? 'selected' : ''}>${cat}</option>`
                                 ).join('')}
                             </select>
+                            ${transaction.prediction ? `<div class="text-xs text-gray-400">${transaction.prediction.needs_review ? 'Review suggestion' : 'Model'}: ${this.escapeHTML(transaction.prediction.category)} (${Math.round(transaction.prediction.confidence*100)}%)</div>` : ''}
                         </td>
                         <td>
                             <button class="delete-transaction px-2 py-1 bg-red-600/20 text-red-400 rounded text-sm hover:bg-red-600/30 transition-all" 
@@ -762,11 +810,21 @@ Keep responses concise and high-impact.`
 
         // Add event listeners for category changes and delete buttons
         table.querySelectorAll('.category-select').forEach(select => {
-            select.addEventListener('change', (e) => {
-                const transactionId = parseInt(e.target.dataset.id);
-                const transaction = this.state.transactions.find(t => t.id === transactionId);
+            select.addEventListener('change', async (e) => {
+                const transactionId = e.target.dataset.id;
+                const transaction = this.state.transactions.find(t => String(t.id) === transactionId);
                 if (transaction) {
+                    try {
+                        await this.analyticsRequest('/api/corrections', {transaction: {...transaction}, category: e.target.value});
+                    } catch (error) {
+                        e.target.value = transaction.category;
+                        this.showToast('Correction not saved. Check the local service.', 'error');
+                        return;
+                    }
                     transaction.category = e.target.value;
+                    transaction.prediction = null;
+                    this.renderTransactions();
+                    this.populateCategoryFilter();
                     this.updateDashboard();
                     this.saveState();
                 }
@@ -775,9 +833,9 @@ Keep responses concise and high-impact.`
 
         table.querySelectorAll('.delete-transaction').forEach(button => {
             button.addEventListener('click', (e) => {
-                const transactionId = parseInt(e.target.dataset.id);
+                const transactionId = e.target.dataset.id;
                 if (confirm('Are you sure you want to delete this transaction?')) {
-                    this.state.transactions = this.state.transactions.filter(t => t.id !== transactionId);
+                    this.state.transactions = this.state.transactions.filter(t => String(t.id) !== transactionId);
                     this.renderTransactions();
                     this.updateDashboard();
                     this.populateCategoryFilter();
@@ -929,82 +987,33 @@ Keep responses concise and high-impact.`
 
     // AI Insights Generation
     async generateInsights() {
-        if (this.state.transactions.length === 0) {
-            this.showToast('No transactions available for analysis', 'warning');
+        if (!this.state.transactions.length) {
+            this.showToast('Upload transactions first', 'warning');
             return;
         }
-
         try {
-            const snapshot = this.createFinancialSnapshot();
-            const prompt = `${this.prompts.insights}\n\nFinancial Snapshot:\n${snapshot}`;
-            
-            const insights = await this.callAPI(prompt);
-            
-            // Add insights as a message in chat
-            this.addMessage('assistant', `## 🔍 AI Financial Insights\n\n${insights}`);
+            const report = await this.analyticsRequest('/api/analyze', {transactions: this.state.transactions});
+            const lines = [
+                '## Evidence-backed financial insights',
+                `Period: ${report.period.start || 'N/A'} to ${report.period.end || 'N/A'} | ${report.count} unique transactions`,
+                ...report.insights.map(i => `- ${i.claim} [metric: ${i.metric}]` +
+                    (i.transaction_ids ? `\n  Evidence IDs: ${i.transaction_ids.join(', ')}` : '')),
+                `Income: ${this.formatCurrency(report.metrics.income)} | Expenses: ${this.formatCurrency(report.metrics.expenses)}`,
+                report.metrics.savings_rate_percent === null ? 'Savings rate unavailable: no recorded income.' :
+                    `Savings rate: ${report.metrics.savings_rate_percent}%`,
+                '### Largest recorded transactions',
+                ...report.evidence.map(e => `- ${e.id}: ${e.date}, ${this.formatCurrency(e.amount_paise/100)}, ${e.category}`),
+                '### Next-month expense forecast',
+                report.forecast.available ? `${report.forecast.month}: ${this.formatCurrency(report.forecast.forecast_inr)} (${report.forecast.selected_model}). Backtest MAE: last-month ${this.formatCurrency(report.forecast.backtest_mae_inr.last_month)}, trend ${this.formatCurrency(report.forecast.backtest_mae_inr.linear_trend)}. Illustrative range: ${report.forecast.illustrative_range_inr.map(v => this.formatCurrency(v)).join(' to ')}. ${report.forecast.limitation}` : report.forecast.reason,
+                '### Data quality and limitations',
+                `Rejected: ${report.quality.rejected.length}; duplicate rows excluded: ${report.quality.duplicates}.`,
+                ...report.limitations.map(t => `- ${t}`)
+            ];
+            this.addMessage('assistant', lines.join('\n\n'));
             this.switchTab('chat');
-            this.showToast('AI insights generated successfully', 'success');
         } catch (error) {
-            console.warn('API error in insights, using local analytics fallback:', error);
-            const insights = this.generateLocalInsights();
-            this.addMessage('assistant', `## 🔍 AI Financial Insights *(Local Analytics Engine)*\n\n> 💡 *Note: Cloud LLM quota reached. Generated using in-browser heuristic and statistical engine based on your ${this.state.transactions.length} transactions.*\n\n${insights}`);
-            this.switchTab('chat');
-            this.showToast('Generated insights using local engine', 'info');
+            this.showToast('Insights unavailable. Start the local Python service.', 'error');
         }
-    }
-
-    generateLocalInsights() {
-        const income = this.state.transactions
-            .filter(t => t.amount > 0)
-            .reduce((sum, t) => sum + t.amount, 0);
-
-        const expenses = this.state.transactions
-            .filter(t => t.amount < 0)
-            .reduce((sum, t) => sum + Math.abs(t.amount), 0);
-
-        const net = income - expenses;
-        const savingsRate = income > 0 ? ((net / income) * 100).toFixed(1) : 0;
-
-        const categoryBreakdown = {};
-        this.state.transactions
-            .filter(t => t.amount < 0)
-            .forEach(t => {
-                categoryBreakdown[t.category] = (categoryBreakdown[t.category] || 0) + Math.abs(t.amount);
-            });
-
-        const sortedCategories = Object.entries(categoryBreakdown).sort(([, a], [, b]) => b - a);
-        const topCat = sortedCategories[0] ? `${sortedCategories[0][0]} (${this.formatCurrency(sortedCategories[0][1])})` : 'N/A';
-        const secondCat = sortedCategories[1] ? `${sortedCategories[1][0]} (${this.formatCurrency(sortedCategories[1][1])})` : 'N/A';
-        const topTwoTotal = sortedCategories.slice(0, 2).reduce((s, [, a]) => s + a, 0);
-        const topTwoPercent = expenses > 0 ? ((topTwoTotal / expenses) * 100).toFixed(0) : 0;
-
-        return `### 💡 Quick Wins (Actionable Bullets)
-- **Top Outflow Alert:** Your highest single expenditure category is **${topCat}**. Target a 10–15% cut by reviewing high-frequency purchases.
-- **Secondary Expense:** Second largest expense is **${secondCat}**. Look for bundle discounts or low-cost substitutions.
-- **Healthy Savings Margin:** You have retained **${this.formatCurrency(net)}** (${savingsRate}% savings rate) from your income.
-- **Emergency Reserve:** Route at least 40% of net savings into a liquid emergency fund before making discretionary capital allocations.
-- **Recurring Subscriptions:** Audit regular monthly recurring charges (e.g., Netflix, streaming, gym) to eliminate unused subscriptions.
-
----
-
-### 📅 30-Day Financial Action Plan
-1. **Week 1 (Audit & Track):** Maintain daily logging of discretionary expenses to identify unplanned leaks.
-2. **Week 2 (Category Cap):** Set a strict limit on your top categories: ${topCat} and ${secondCat}.
-3. **Week 3 (Automate Savings):** Automate a transfer of ${this.formatCurrency(Math.max(0, net * 0.3))} immediately after income credit to lock in gains.
-4. **Week 4 (Month-End Review):** Compare actual vs. projected spend in the Plotly Dashboard to calibrate next month's envelope.
-
----
-
-### ⚠️ Risk Flags
-- **High Outflow Concentration:** Top two categories account for **${topTwoPercent}%** of your total monthly expenditures.
-- **Discretionary Creep:** Unmonitored daily micro-transactions can accumulate to surpass primary utility expenses.
-
----
-
-### 📊 Recommended Budget Split (50 / 30 / 20 Rule)
-- **Needs (50%):** ${this.formatCurrency(income * 0.5)} — Utilities, Groceries, Rent, Health
-- **Wants (30%):** ${this.formatCurrency(income * 0.3)} — Entertainment, Dining Out, Shopping
-- **Savings & Investments (20%):** ${this.formatCurrency(income * 0.2)} — Emergency fund, retirement & debt reduction`;
     }
 
     classifyTransactionLocal(description) {
@@ -1242,7 +1251,7 @@ Average Transaction: ${this.formatCurrency(expenses / this.state.transactions.fi
             conversations: this.state.currentConversation,
             transactions: this.state.transactions,
             memory: this.state.memory,
-            settings: this.state.settings,
+            settings: {...this.state.settings, apiKey: ""},
             exportDate: new Date().toISOString(),
             version: '1.0'
         };
@@ -1331,6 +1340,12 @@ Average Transaction: ${this.formatCurrency(expenses / this.state.transactions.fi
         }
     }
 
+    escapeHTML(value) {
+        const element = document.createElement('span');
+        element.textContent = String(value);
+        return element.innerHTML;
+    }
+
     // State Persistence
     saveState() {
         if (this.state.settings.persistConversations || 
@@ -1344,7 +1359,7 @@ Average Transaction: ${this.formatCurrency(expenses / this.state.transactions.fi
                     ...this.state.memory,
                     keywordIndex: Array.from(this.state.memory.keywordIndex.entries())
                 } : { summary: '', profile: '', keywordIndex: [] },
-                settings: this.state.settings
+                settings: {...this.state.settings, apiKey: ""}
             };
 
             localStorage.setItem('financeai-state', JSON.stringify(stateToSave));
@@ -1367,16 +1382,10 @@ Average Transaction: ${this.formatCurrency(expenses / this.state.transactions.fi
                 }
                 if (parsedState.settings) this.state.settings = { ...this.state.settings, ...parsedState.settings };
 
-                // Reset outdated Together key if present
-                if (this.state.settings.apiKey && this.state.settings.apiKey.startsWith('tgp_v1_o319')) {
-                    this.state.settings.apiKey = '';
-                }
-
-                // Load from window.CONFIG if local config exists and no key set
-                if (!this.state.settings.apiKey && window.CONFIG && window.CONFIG.GROQ_API_KEY) {
-                    this.state.settings.apiKey = window.CONFIG.GROQ_API_KEY;
-                    this.state.settings.provider = 'groq';
-                    this.state.settings.model = 'qwen/qwen3.8-27b';
+                this.state.settings.apiKey = '';
+                if (parsedState.settings) {
+                    parsedState.settings.apiKey = '';
+                    localStorage.setItem('financeai-state', JSON.stringify(parsedState));
                 }
 
                 // Ensure model belongs to active provider (fix old cached models)
@@ -1412,17 +1421,6 @@ Average Transaction: ${this.formatCurrency(expenses / this.state.transactions.fi
                 this.state.currentConversation.forEach(msg => {
                     this.addMessageToDOM(msg);
                 });
-            } else {
-                // First-time visit with no saved state
-                if (window.CONFIG && window.CONFIG.GROQ_API_KEY) {
-                    this.state.settings.apiKey = window.CONFIG.GROQ_API_KEY;
-                    this.state.settings.provider = 'groq';
-                    this.state.settings.model = 'qwen/qwen3.8-27b';
-                    const apiKeyInput = document.getElementById('api-key');
-                    if (apiKeyInput) apiKeyInput.value = this.state.settings.apiKey;
-                    const providerSelect = document.getElementById('provider-select');
-                    if (providerSelect) providerSelect.value = 'groq';
-                }
             }
         } catch (error) {
             console.error('Error loading state:', error);

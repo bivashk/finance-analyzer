@@ -1,0 +1,10 @@
+{
+  "temperature": 0.8699273469085518,
+  "threshold": 0.67,
+  "validation_accepted": 168,
+  "validation_precision": 0.9583333333333334,
+  "target_precision": 0.95,
+  "policy": "Empirical validation target, not a guaranteed production error rate.",
+  "calibration_source": "merchant-disjoint synthetic validation data",
+  "checkpoint_sha256": "177ed21bafac36c944add51db0c40ea2d89a3e28bc6b2de16c99d15051e95000"
+}

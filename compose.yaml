@@ -1,0 +1,17 @@
+services:
+  finance:
+    build: .
+    ports:
+      - "127.0.0.1:8001:8001"
+    environment:
+      FINANCE_CLASSIFIER: transformer
+      FINANCE_HOST: 0.0.0.0
+      PORT: "8001"
+      HF_HOME: /app/.cache/huggingface
+      HF_HUB_OFFLINE: "1"
+    volumes:
+      - ./models:/app/models:ro
+      - ./.cache/huggingface:/app/.cache/huggingface:ro
+      - finance-data:/app/data
+volumes:
+  finance-data:

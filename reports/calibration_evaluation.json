@@ -1,0 +1,392 @@
+{
+  "calibration_fit_rows": 365,
+  "threshold_selection_rows": 485,
+  "test_rows": 850,
+  "temperature": 0.8699273469085518,
+  "review_policy": {
+    "threshold": 0.67,
+    "validation_accepted": 168,
+    "validation_precision": 0.9583333333333334,
+    "target_precision": 0.95,
+    "policy": "Empirical validation target, not a guaranteed production error rate."
+  },
+  "uncalibrated_test": {
+    "negative_log_likelihood": 1.4284217218601707,
+    "brier_score": 0.5242260826475461,
+    "expected_calibration_error_10_bins": 0.1125780645020576,
+    "reliability_bins": [
+      {
+        "lower": 0.1,
+        "count": 26,
+        "accuracy": 0.11538461538461539,
+        "confidence": 0.18311139115547168
+      },
+      {
+        "lower": 0.2,
+        "count": 153,
+        "accuracy": 0.22875816993464052,
+        "confidence": 0.25306439525208263
+      },
+      {
+        "lower": 0.3,
+        "count": 192,
+        "accuracy": 0.3854166666666667,
+        "confidence": 0.3445572533961572
+      },
+      {
+        "lower": 0.4,
+        "count": 103,
+        "accuracy": 0.5825242718446602,
+        "confidence": 0.44085506173445904
+      },
+      {
+        "lower": 0.5,
+        "count": 51,
+        "accuracy": 0.5490196078431373,
+        "confidence": 0.548109671211645
+      },
+      {
+        "lower": 0.6,
+        "count": 69,
+        "accuracy": 0.8985507246376812,
+        "confidence": 0.6500382046834767
+      },
+      {
+        "lower": 0.7,
+        "count": 125,
+        "accuracy": 0.984,
+        "confidence": 0.7414908738419714
+      },
+      {
+        "lower": 0.8,
+        "count": 131,
+        "accuracy": 1.0,
+        "confidence": 0.8452881009232844
+      }
+    ]
+  },
+  "calibrated_test": {
+    "negative_log_likelihood": 1.4074426447620367,
+    "brier_score": 0.5116074023554319,
+    "expected_calibration_error_10_bins": 0.09718806291883897,
+    "reliability_bins": [
+      {
+        "lower": 0.1,
+        "count": 8,
+        "accuracy": 0.125,
+        "confidence": 0.1830900093244968
+      },
+      {
+        "lower": 0.2,
+        "count": 115,
+        "accuracy": 0.20869565217391303,
+        "confidence": 0.2558750438536079
+      },
+      {
+        "lower": 0.3,
+        "count": 166,
+        "accuracy": 0.26506024096385544,
+        "confidence": 0.3507537933960183
+      },
+      {
+        "lower": 0.4,
+        "count": 131,
+        "accuracy": 0.5725190839694656,
+        "confidence": 0.44642044874267245
+      },
+      {
+        "lower": 0.5,
+        "count": 67,
+        "accuracy": 0.5522388059701493,
+        "confidence": 0.5494696536290484
+      },
+      {
+        "lower": 0.6,
+        "count": 42,
+        "accuracy": 0.5476190476190477,
+        "confidence": 0.6548608204962454
+      },
+      {
+        "lower": 0.7,
+        "count": 95,
+        "accuracy": 0.9263157894736842,
+        "confidence": 0.7596761701549004
+      },
+      {
+        "lower": 0.8,
+        "count": 127,
+        "accuracy": 0.984251968503937,
+        "confidence": 0.8490432952291277
+      },
+      {
+        "lower": 0.9,
+        "count": 99,
+        "accuracy": 1.0,
+        "confidence": 0.9163282885260403
+      }
+    ]
+  },
+  "test_auto_accept_coverage": 0.39294117647058824,
+  "test_accepted_accuracy": 0.9580838323353293,
+  "test_review_rate": 0.6070588235294118,
+  "test_error_count": 334,
+  "top_confusions": [
+    [
+      "Groceries -> Shopping",
+      16
+    ],
+    [
+      "Personal Care -> Entertainment",
+      15
+    ],
+    [
+      "Personal Care -> Subscription",
+      14
+    ],
+    [
+      "Transportation -> Shopping",
+      14
+    ],
+    [
+      "Groceries -> Restaurants",
+      12
+    ],
+    [
+      "Restaurants -> Shopping",
+      11
+    ],
+    [
+      "Education -> Subscription",
+      9
+    ],
+    [
+      "Entertainment -> Transportation",
+      9
+    ],
+    [
+      "Shopping -> Groceries",
+      9
+    ],
+    [
+      "Subscription -> Transportation",
+      9
+    ]
+  ],
+  "error_examples": [
+    {
+      "description": "[credit] COURSERA; Subscription",
+      "merchant_family": "coursera",
+      "actual": "Education",
+      "predicted": "Travel",
+      "confidence": 0.4139
+    },
+    {
+      "description": "[debit] MATHNASIUM 5359 ELM ST QUEENS11101 NY USA",
+      "merchant_family": "mathnasium",
+      "actual": "Education",
+      "predicted": "Healthcare",
+      "confidence": 0.2048
+    },
+    {
+      "description": "[debit] O'REILLY MEDIA.COM",
+      "merchant_family": "oreillymedia",
+      "actual": "Education",
+      "predicted": "Entertainment",
+      "confidence": 0.2649
+    },
+    {
+      "description": "[debit] Withdrawal From Pearson",
+      "merchant_family": "pearson",
+      "actual": "Education",
+      "predicted": "Personal Care",
+      "confidence": 0.2558
+    },
+    {
+      "description": "[credit] PLURALSIGHT.COM",
+      "merchant_family": "pluralsight",
+      "actual": "Education",
+      "predicted": "Subscription",
+      "confidence": 0.4193
+    },
+    {
+      "description": "[debit] COURSERA - HOUSTON",
+      "merchant_family": "coursera",
+      "actual": "Education",
+      "predicted": "Transportation",
+      "confidence": 0.4439
+    },
+    {
+      "description": "[debit] MATHNASIUM; BILLING",
+      "merchant_family": "mathnasium",
+      "actual": "Education",
+      "predicted": "Subscription",
+      "confidence": 0.1909
+    },
+    {
+      "description": "[debit] O'REILLY MEDIA.COM",
+      "merchant_family": "oreillymedia",
+      "actual": "Education",
+      "predicted": "Entertainment",
+      "confidence": 0.2649
+    },
+    {
+      "description": "[debit] Withdrawal From Pearson",
+      "merchant_family": "pearson",
+      "actual": "Education",
+      "predicted": "Personal Care",
+      "confidence": 0.2558
+    },
+    {
+      "description": "[debit] PLURALSIGHT; PURCHASE",
+      "merchant_family": "pluralsight",
+      "actual": "Education",
+      "predicted": "Travel",
+      "confidence": 0.3457
+    },
+    {
+      "description": "[debit] COURSERA - PHILADELPHIA",
+      "merchant_family": "coursera",
+      "actual": "Education",
+      "predicted": "Transportation",
+      "confidence": 0.4667
+    },
+    {
+      "description": "[debit] O'REILLY MEDIA.COM",
+      "merchant_family": "oreillymedia",
+      "actual": "Education",
+      "predicted": "Entertainment",
+      "confidence": 0.2649
+    },
+    {
+      "description": "[debit] PEARSON #257 LAS VEGAS",
+      "merchant_family": "pearson",
+      "actual": "Education",
+      "predicted": "Shopping",
+      "confidence": 0.3883
+    },
+    {
+      "description": "[debit] PLURALSIGHT*NLV5OLR0T1S8",
+      "merchant_family": "pluralsight",
+      "actual": "Education",
+      "predicted": "Shopping",
+      "confidence": 0.2234
+    },
+    {
+      "description": "[debit] Skillshare*7n8ig899ja10",
+      "merchant_family": "skillshare",
+      "actual": "Education",
+      "predicted": "Personal Care",
+      "confidence": 0.2164
+    },
+    {
+      "description": "[debit] COURSERA*9E5G30S4RB",
+      "merchant_family": "coursera",
+      "actual": "Education",
+      "predicted": "Shopping",
+      "confidence": 0.3841
+    },
+    {
+      "description": "[debit] O'REILLY MEDIA.COM",
+      "merchant_family": "oreillymedia",
+      "actual": "Education",
+      "predicted": "Entertainment",
+      "confidence": 0.2649
+    },
+    {
+      "description": "[debit] PEARSON 9550 ELM ST SALT LAKE CITY 84101 UT USA",
+      "merchant_family": "pearson",
+      "actual": "Education",
+      "predicted": "Groceries",
+      "confidence": 0.4498
+    },
+    {
+      "description": "[debit] Pluralsight Corp",
+      "merchant_family": "pluralsight",
+      "actual": "Education",
+      "predicted": "Subscription",
+      "confidence": 0.4684
+    },
+    {
+      "description": "[debit] COURSERA - ORLANDO",
+      "merchant_family": "coursera",
+      "actual": "Education",
+      "predicted": "Transportation",
+      "confidence": 0.2991
+    },
+    {
+      "description": "[debit] MATHNASIUM; PAYMENT",
+      "merchant_family": "mathnasium",
+      "actual": "Education",
+      "predicted": "Subscription",
+      "confidence": 0.2797
+    },
+    {
+      "description": "[debit] O'REILLY MEDIA.COM",
+      "merchant_family": "oreillymedia",
+      "actual": "Education",
+      "predicted": "Entertainment",
+      "confidence": 0.2649
+    },
+    {
+      "description": "[debit] PEARSON 279 MISSION DR BROOKLYN 11201-7428NY USA",
+      "merchant_family": "pearson",
+      "actual": "Education",
+      "predicted": "Insurance",
+      "confidence": 0.639
+    },
+    {
+      "description": "[debit] PP*Pluralsight",
+      "merchant_family": "pluralsight",
+      "actual": "Education",
+      "predicted": "Subscription",
+      "confidence": 0.595
+    },
+    {
+      "description": "[debit] SKILLSHARE*0RGUDZXA6W",
+      "merchant_family": "skillshare",
+      "actual": "Education",
+      "predicted": "Entertainment",
+      "confidence": 0.3557
+    },
+    {
+      "description": "[debit] COURSERA - LAS VEGAS",
+      "merchant_family": "coursera",
+      "actual": "Education",
+      "predicted": "Transportation",
+      "confidence": 0.4986
+    },
+    {
+      "description": "[debit] PreApproved Payment Bill User Payment: Mathnasium",
+      "merchant_family": "mathnasium",
+      "actual": "Education",
+      "predicted": "Subscription",
+      "confidence": 0.7062
+    },
+    {
+      "description": "[debit] PreApproved Payment Bill User Payment: PEARSON",
+      "merchant_family": "pearson",
+      "actual": "Education",
+      "predicted": "Subscription",
+      "confidence": 0.6903
+    },
+    {
+      "description": "[debit] PP*Pluralsight",
+      "merchant_family": "pluralsight",
+      "actual": "Education",
+      "predicted": "Subscription",
+      "confidence": 0.595
+    },
+    {
+      "description": "[debit] COURSERA.COM",
+      "merchant_family": "coursera",
+      "actual": "Education",
+      "predicted": "Subscription",
+      "confidence": 0.3432
+    }
+  ],
+  "limitations": [
+    "Synthetic matched-merchant benchmark; vocabulary matching can miss aliases.",
+    "Validation used for epoch selection as well as post-hoc calibration; independent calibration data would be stronger.",
+    "Threshold target is empirical; reliability and accepted accuracy can deteriorate on new domains."
+  ]
+}

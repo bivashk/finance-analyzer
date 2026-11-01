@@ -216,7 +216,6 @@ app.listen(PORT, () => {
     console.log(`🚀 FinanceAI Proxy Server running on port ${PORT}`);
     console.log(`📡 Health check: http://localhost:${PORT}/health`);
     console.log(`🔗 API endpoint: http://localhost:${PORT}/api/chat`);
-    console.log(`🔑 Using Together AI with key: ${TOGETHER_API_KEY.substring(0, 10)}...`);
     
     if (!TOGETHER_API_KEY || TOGETHER_API_KEY === 'your-together-api-key-here') {
         console.warn('⚠️  Warning: Please set your TOGETHER_API_KEY environment variable');
