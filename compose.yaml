@@ -5,6 +5,7 @@ services:
       - "127.0.0.1:8001:8001"
     environment:
       FINANCE_CLASSIFIER: transformer
+      FINANCE_MODEL_PATH: /app/models/merchant/transformer
       FINANCE_HOST: 0.0.0.0
       PORT: "8001"
       HF_HOME: /app/.cache/huggingface

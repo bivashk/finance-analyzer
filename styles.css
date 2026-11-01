@@ -1018,3 +1018,9 @@ textarea {
 /* Keep expanded analytics navigation usable on smaller screens. */
 nav > .flex { overflow-x: auto; }
 .tab-button { white-space: nowrap; }
+
+/* Keep analytics content inside the main column; wide tables scroll locally. */
+.flex-1 { min-width: 0; }
+#customer-segments { max-width: 100%; overflow-x: auto; }
+#customer-segments table { min-width: 32rem; border-collapse: collapse; }
+#customer-segments th, #customer-segments td { text-align: left; padding: 0.65rem; }

@@ -9,5 +9,5 @@ COPY reports ./reports
 COPY api.py index.html script.js styles.css logo.png ./
 # Mount local models/ and Hugging Face cache before enabling transformer inference.
 COPY deployment ./deployment
-ENV FINANCE_CLASSIFIER=transformer
+ENV FINANCE_CLASSIFIER=transformer FINANCE_MODEL_PATH=/app/models/merchant/transformer
 CMD ["sh", "deployment/start.sh"]

@@ -8,7 +8,7 @@ A banking analytics workflow needs reliable categories and explainable spending 
 
 The existing HTML/JavaScript and Plotly frontend remains the product interface. Python provides validated CSV ingestion, SQL cash-flow and category/month aggregations, transformer inference, calibration, corrections, customer behavior features, and session-scoped operational metrics. A Netlify server-side gateway connects the static frontend to a Render model API without exposing the gateway credential in JavaScript.
 
-Public-demo mode processes uploaded transaction rows in memory and discards them after each request. Anonymous session-scoped telemetry stores prediction categories, confidence, review outcomes, transaction hashes, and inference duration for at most 24 hours. Descriptions, amounts, and uploaded customer histories are excluded from telemetry. Browser transaction persistence remains controlled by the user's existing settings. This is a portfolio demonstration, not a production banking platform.
+Public-demo mode processes uploaded transaction rows in memory and discards them after each request. Anonymous session-scoped telemetry stores prediction categories, confidence, review outcomes, transaction hashes, and inference duration with a 24-hour reporting window; expired metadata is removed on the next metrics access. Descriptions, amounts, and uploaded customer histories are excluded from telemetry. Browser transaction persistence remains controlled by the user's existing settings. This is a portfolio demonstration, not a production banking platform.
 
 ## Dataset and evaluation design
 

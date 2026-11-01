@@ -41,7 +41,7 @@ The original HTML/JavaScript dashboard used by the Netlify site is the primary i
 ```sh
 source .venv/bin/activate
 export HF_HOME="$PWD/.cache/huggingface"
-HF_HUB_OFFLINE=1 FINANCE_CLASSIFIER=transformer PORT=8001 python api.py
+HF_HUB_OFFLINE=1 FINANCE_MODEL_PATH="$PWD/models/merchant/transformer" FINANCE_CLASSIFIER=transformer PORT=8001 python api.py
 ```
 
 Open http://127.0.0.1:8001. The original dashboard and trained-model API run together. Upload a CSV with `Date,Description,Amount` and optional `Category`. Supported dates: YYYY-MM-DD, DD/MM/YYYY, DD-MM-YYYY. Positive amounts are income; negative amounts are expenses. For classification, omit Category or use Other.
@@ -108,7 +108,7 @@ export HF_HOME="$PWD/.cache/huggingface"
 FINANCE_MODEL_PATH="$PWD/models/merchant/transformer" FINANCE_CLASSIFIER=transformer PORT=8003 python api.py
 ```
 
-For the public-demo storage policy, add `FINANCE_PUBLIC_DEMO=1`. Uploaded financial rows then use request-local in-memory databases. Anonymous prediction metadata is isolated by a random browser-session header and expires after 24 hours. `FINANCE_METRICS_DB` controls the telemetry database. Configure `FINANCE_COST_PER_COMPUTE_SECOND` only with a known rate; reported costs are compute-time estimates, never cloud-billing measurements.
+For the public-demo storage policy, add `FINANCE_PUBLIC_DEMO=1`. Uploaded financial rows then use request-local in-memory databases. Anonymous prediction metadata is isolated by a random browser-session header with a 24-hour reporting window; expired metadata is deleted on the next metrics access. `FINANCE_METRICS_DB` controls the telemetry database. Configure `FINANCE_COST_PER_COMPUTE_SECOND` only with a known rate; reported costs are compute-time estimates, never cloud-billing measurements.
 
 Netlify's server-side gateway needs `FINANCE_API_URL` (HTTPS Render API URL) and `FINANCE_PROXY_TOKEN`. The same secret is set on the API. Never place it in a frontend config file. `deployment/Dockerfile.render` uses CPU PyTorch and the actual calibrated safetensors checkpoint. `render.yaml` describes a free-plan service. The calibrated model artifacts are included in the release branch and Render image; the main workspace models directory remains ignored by Git. Only the matched-merchant transformer needs to be packaged. The public service is a rate-limited stateless portfolio demo, not authenticated production banking infrastructure.
 
