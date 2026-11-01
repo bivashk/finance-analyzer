@@ -60,3 +60,7 @@ The project demonstrates business framing, Python and SQL, exploratory feature c
 - `python -m ml.calibrate` fits temperature and the review policy using validation data only, then reports held-out results.
 - `python -m ml.customer_demo` creates the synthetic segmentation report.
 - `reports/merchant_dataset.json`, `merchant_evaluation.json`, `calibration_evaluation.json`, and `customer_segmentation.json` contain the underlying evidence.
+
+## Verified delivery
+
+The deployed frontend is https://financeanalyzerbivash.netlify.app and its model API is https://finance-analyzer-api-mdqo.onrender.com on Render’s free plan. The release source is https://github.com/bivashk/finance-analyzer/tree/codex/jd-aligned-analytics. Synthetic production probes verified calibrated model inference, financial totals, correction telemetry, session isolation, and all 36 synthetic customer profiles. Deployment IDs and timestamps are recorded in `reports/deployment_evidence.json`. Free-service restarts can reset ephemeral metrics; 24 hours is a maximum retention period, not a persistence guarantee.

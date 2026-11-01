@@ -1,0 +1,21 @@
+{
+  "frontend_url": "https://financeanalyzerbivash.netlify.app",
+  "backend_url": "https://finance-analyzer-api-mdqo.onrender.com",
+  "netlify_deploy_id": "6ae74309505f19c774fe0acc",
+  "render_service_id": "srv-dbjk3qutlv9c73dfb1cg",
+  "render_deploy_id": "dep-dbjk3rutlv9c73dfb4lg",
+  "render_plan": "free",
+  "release_branch": "codex/jd-aligned-analytics",
+  "release_commit": "6fe0ba03329349e7c8af853f717beae43ced7e8a",
+  "verified_at_utc": "2026-11-01T13:49:24.825135+00:00",
+  "state": "ready",
+  "verified": [
+    "trained model evaluation",
+    "calibrated inference",
+    "financial totals",
+    "correction telemetry",
+    "session isolation",
+    "synthetic cohort segmentation",
+    "frontend security headers"
+  ]
+}

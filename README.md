@@ -70,9 +70,9 @@ node --test tests/frontend.test.cjs
 
 Tests cover money/date validation, quoted CSVs, duplicates, unsupported GenAI claims, chronological forecasts, normalized split leakage, anomaly review, study-input validation, API contracts, private-file access protection, and Streamlit/Plotly integration. Streamlit tests are skipped when its optional dependency is absent. HTTP integration tests use loopback and temporary databases.
 
-## Deployment status and privacy
+## Deployment and privacy
 
-The original frontend remains the Netlify deployment target: https://financeanalyzerbivash.netlify.app. No new public deployment has been made in this session. Netlify copies only public frontend assets. The new Python model endpoints need separate hosting and a same-origin `/api/*` proxy before they can work on the public Netlify site; the local service serves the frontend and API together.
+Live frontend: https://financeanalyzerbivash.netlify.app. Model service: https://finance-analyzer-api-mdqo.onrender.com. The calibrated model API is deployed on Render and connected through Netlify’s server-side gateway. Netlify copies only public frontend assets. The public `/api/*` gateway invokes the calibrated Python model on Render; the local service can still serve the frontend and API together.
 
 A local container configuration is included:
 
@@ -110,7 +110,7 @@ FINANCE_MODEL_PATH="$PWD/models/merchant/transformer" FINANCE_CLASSIFIER=transfo
 
 For the public-demo storage policy, add `FINANCE_PUBLIC_DEMO=1`. Uploaded financial rows then use request-local in-memory databases. Anonymous prediction metadata is isolated by a random browser-session header and expires after 24 hours. `FINANCE_METRICS_DB` controls the telemetry database. Configure `FINANCE_COST_PER_COMPUTE_SECOND` only with a known rate; reported costs are compute-time estimates, never cloud-billing measurements.
 
-Netlify's server-side gateway needs `FINANCE_API_URL` (HTTPS Render API URL) and `FINANCE_PROXY_TOKEN`. The same secret is set on the API. Never place it in a frontend config file. `deployment/Dockerfile.render` uses CPU PyTorch and the actual calibrated safetensors checkpoint. `render.yaml` describes a free-plan service. Model artifacts must be included in the deployment source or image; the local models directory is ordinarily ignored by Git. Only the matched-merchant transformer needs to be packaged. The public service is a rate-limited stateless portfolio demo, not authenticated production banking infrastructure.
+Netlify's server-side gateway needs `FINANCE_API_URL` (HTTPS Render API URL) and `FINANCE_PROXY_TOKEN`. The same secret is set on the API. Never place it in a frontend config file. `deployment/Dockerfile.render` uses CPU PyTorch and the actual calibrated safetensors checkpoint. `render.yaml` describes a free-plan service. The calibrated model artifacts are included in the release branch and Render image; the main workspace models directory remains ignored by Git. Only the matched-merchant transformer needs to be packaged. The public service is a rate-limited stateless portfolio demo, not authenticated production banking infrastructure.
 
 ```sh
 python3 deployment/build_frontend.py
@@ -118,3 +118,5 @@ node --test tests/frontend.test.cjs tests/proxy.test.mjs
 python -m unittest discover -s tests -v
 python3 deployment/verify_public.py https://your-netlify-site.netlify.app
 ```
+
+Deployment source: https://github.com/bivashk/finance-analyzer/tree/codex/jd-aligned-analytics. `deployment/publish_netlify.py` creates a draft with deploy-scoped server-only credentials; verify it, then promote atomically. Future deployments made through other tools must configure equivalent gateway environment variables. `deployment/smoke_test.py` verifies actual calibrated inference, financial totals, correction telemetry, session isolation, and synthetic customer segmentation through the public gateway.

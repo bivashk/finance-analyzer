@@ -9,3 +9,5 @@ public.mkdir(exist_ok=True)
 for name in ('index.html','script.js','styles.css','logo.png'):
     shutil.copyfile(ROOT/name,public/name)
 (public/'_redirects').write_text('/api/* /.netlify/functions/finance-api/:splat 200\n')
+
+(public/'_headers').write_text('/*\n  X-Frame-Options: DENY\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n')
